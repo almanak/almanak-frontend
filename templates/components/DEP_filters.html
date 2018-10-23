@@ -1,0 +1,68 @@
+<div class="filters">
+    {% for f in filters %}
+        <div class="media-object {% if f.negated %}filter-negated{% else %}filter{% endif %}">
+            <span class="media-object-section main-section">
+                {% if f.key == 'date_from' %}
+                    <span class="material-icons">date_range</span>
+                    {% if f.value[-1:-5] == '0101' %}
+                        {{f.value[0:4]}} og senere
+                    {% else %}
+                        {{f.value[0:4]}}-{{f.value[4:6]}}-{{f.value[6:8]}} og senere
+                    {% endif %}
+                {% elif f.key == 'date_to' %}
+                    <span class="material-icons">date_range</span>
+                    {% if f.value[-1:-5] == '1231' %}
+                        {{f.value[0:4]}} og tidligere
+                    {% else %}
+                        {{f.value[0:4]}}-{{f.value[4:6]}}-{{f.value[6:8]}} og tidligere
+                    {% endif %}
+                {% else %}
+                    {% if f.key == 'usability' %}
+                        <span class="material-icons">copyright</span>                    
+                    {% elif f.key == 'availability' %}
+                        {% if f.value == '2' %}
+                            <span class="material-icons">account_balance</span>
+                        {% elif f.value == '3' %}
+                            <span class="material-icons">home</span>
+                        {% else %}
+                            <span class="material-icons">computer</span>
+                        {% endif %}
+                    {% elif f.key == 'people' %}
+                        <span class="far fa-user"></span>
+                    {% elif f.key == 'locations' %}
+                        <span class="material-icons">location_on</span>
+                    {% elif f.key == 'organisations' %}
+                        <span class="material-icons">business</span>
+                    {% elif f.key == 'content_types' %}
+                        {% if f.value in ['61'] %}
+                            <span class="material-icons">photo</span>
+                        {% elif f.value in ['49', '55'] %}
+                            <span class="material-icons">business</span>
+                        {% else %}
+                            <span class="material-icons">computer</span>
+                        {% endif %}
+                    {% elif f.key == 'series' %}
+                        <span class="material-icons">sort</span>
+                    {% elif f.key == 'collection' %}
+                        <span class="fas fa-archive"></span>
+                    {% elif f.key == 'subjects' %}
+                        <span class="material-icons">subject</span>
+                    {% endif %}                    
+    
+                    {% if f.label %}
+                        {{f.label}}
+                    {% else %}
+                        {{f.value}}
+                    {% endif %}
+
+                {% endif %}
+            </span>
+            <ul class="menu simple media-object-section">
+                {% if f.view_link %}
+                    <li><a class="" href="{{f.view_link}}" title="Se mere om {{f.label}}">Se mere</a></li>
+                {% endif %}
+                <li><a class="" href="/search?{{f.remove_link}}" title="Fjern {{f.label}} som søgefilter">Slet</a></li>
+            </ul>
+        </div>
+    {% endfor %}
+</div>

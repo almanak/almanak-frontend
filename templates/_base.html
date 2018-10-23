@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="da" class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if title %}{{title}} | AarhusArkivet{% else %}AarhusArkivet{% endif %}</title>
+    {% if page == 'searchpage' %}<meta name="robots" content="noindex">{% endif %}
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-114828717-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600" rel="stylesheet">
+    <link href="https://use.fontawesome.com/releases/v5.0.2/css/all.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/application.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.7/dist/css/lightgallery.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" rel="stylesheet">
+</head>
+
+<body class="{{page}}">
+    <div class="off-canvas-wrapper">
+        <!-- used to refresh page on history-back -->
+        <input type="text" style="display:none !important" id="refresh" value="no">
+
+        <!-- Off canvas left-content-->
+        <div id="searchbar" style="overflow-y: hidden;" class="off-canvas position-left hide-for-print {% if page == 'searchpage' %}reveal-for-large{% endif %}" data-off-canvas data-transition="push">
+
+            {% if page == 'searchpage' %}
+            <div data-sticky-container class="global-header-expansion-container show-for-large">
+                <div class="global-header-expansion grid-x align-middle" data-sticky data-options="marginTop:0;">
+                    <div class="cell">
+                        <a class="global-header-logo" href="/">
+                            <img src="/static/img/aarhusarkivet_logo_white_51x113px.png">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="searchbar-inner">
+                <div class="grid-x" style="height:48px;padding:7px;background-color:#676767;">
+                    <div class="cell auto">
+                        {% include 'components/search_form_global.html' %}
+                    </div>
+                    <div class="cell shrink {% if page == 'searchpage' %}hide-for-large{% endif %}">
+                        <a class="close-button" style="right:.5rem;" aria-label="Luk søgning" data-close>
+                            <span style="color:white;" aria-hidden="true">&times;</span>
+                        </a>
+                    </div>
+                </div>
+
+                {% if filters %}
+                    <div class="media-object" style="margin-top:10px;padding-left:9px;padding-right:6px;margin-bottom:0;">
+                        <h5 class="media-object-section main-section" style="padding-left:0;">Aktive filtre</h5>
+                        <div class="media-object-section bottom">
+                            <a href="/search" style="font-size:85%;color:white">Ryd alle filtre</a>
+                        </div>
+                    </div>
+                    {% include 'components/filters_v2.html' %}
+                {% endif %}
+
+                <h5 style="margin-top:{% if filters %}2rem;{% else %}1rem;{% endif %}padding-left:9px;">
+                    {% if collection_search %}Samlingsfiltre{% else %}Filtre{% endif %}
+                </h5>
+                {% include 'components/facets_v2.html' %}
+
+                <h5 style="margin:2rem 9px .5rem;color:#fefefe">Søgetips</h5>
+                <div class="searchtips">
+                    <ul class="menu vertical">
+                        <li style="">Brug '*' til at trunkere. Eks. skattemandtal*</li>
+                        <li style="">Brug " " (anførselstegn) til frase-søgning, eks. "marselisborg slot"</li>
+                        <li style="">Brug '-' (uden mellemrum) før et ord eller frase til at ekskludere, eks. -Mejlgade eller -"marselisborg slot"</li>
+                    </ul>
+                </div>
+
+                <div class="searchlinks">
+                    <a href="/guides/searchguide">Læs mere om søgemulighederne</a>
+                    {% if session.get('latest_search') %}
+                        <a href="{{session.get('latest_search')}}">Gentag seneste søgning</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Off canvas right-content-->
+        <div id="menubar" class="off-canvas position-right hide-for-print" data-off-canvas data-transition="push">
+            <div style="height:48px;">
+                <h4>Menu</h4>
+                <a class="close-button" aria-label="Luk menu" data-close><span aria-hidden="true">&times;</span></a>
+            </div>
+            <div>
+                <ul class="vertical menu align-right">
+                    {% if session.get('profile') %}
+                        <li class="menu-text">{{session['profile'].get('name')}}</li>
+                        <li><a href="/users/me">Min profil</a></li>
+                        <li><a href="/users/me/cart">Min kurv</a></li>
+                        <!-- <li><a href="/users/me/orders">Mine bestillinger</a></li> -->
+                        <li><a href="/users/me/bookmarks">Mine bogmærker</a></li>
+                        <li><a href="/users/me/searches">Mine søgninger</a></li>
+                        <li><a href="/logout">Log ud</a></li>
+                    {% else %}
+                        <li><a href="/login">Log ind</a></li>
+                        <li><a href="/signup">Opret bruger</a></li>
+                    {% endif %}
+
+                    <li class="menu-text">Vejledninger</li>
+                    <li><a href="/guides/searchguide">Hjælp til søgning</a></li>
+                    <li><a href="/guides/genealogy">Slægtsforskning</a></li>
+                    <li><a href="/guides/municipality_records">Kommunale sager</a></li>
+
+                    <li class="menu-text">Om samlingerne</li>
+                    <li><a href="/about/collections">Om AarhusArkivet</a></li>
+                    <li><a href="/about/availability">Tilgængelighed</a></li>
+                    <li><a href="/about/usability">Brugbarhed</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- On canvas -->
+        <div class="off-canvas-content" data-off-canvas-content>
+
+            <!-- Top header -->
+            <div data-sticky-container class="global-header-container hide-for-print" style="z-index:10;">
+                <div class="global-header grid-x align-middle" data-sticky data-options="marginTop:0;">
+                    <!-- Logo og navnetræk -->
+                    <div class="cell shrink">
+                        <a class="global-header-logo {% if page == 'searchpage' %}hide-for-large{% elif page == 'homepage' %}hide-for-medium{% endif %}" href="/" style="height:34px;display:inline-block;margin-left:10px;">
+                            <img src="/static/img/aarhusarkivet_logo_white_51x113px.png" style="height:100%;">
+                        </a>
+                    </div>
+
+                    <!-- Højre-menu -->
+                    <div class="cell auto">
+                        <ul class="menu dropdown align-right" data-dropdown-menu>
+                            <!-- Search-icon. Hide on indexpage with own search-field -->
+                            {% if page != 'homepage' %}
+                                <li class="global-header-item {% if page =='searchpage' %}hide-for-large{% endif %}">
+                                    <a class="global-header-link" data-toggle="searchbar" style="position:relative;">
+                                        <span class="show-for-mlarge" style="padding-right:.2em;">Søg</span>
+                                        <span class="fas fa-search"></span>
+                                        {% if filters %}
+                                            <span class="badge">{{filters|length}}</span>
+                                        {% endif %}
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            <!-- Basket-icon. Always show -->
+                            <li class="global-header-item">
+                                <a class="global-header-link cart-link" href="{% if session.get('profile') %}/users/me/cart{% else %}/cart{% endif %}" style="position:relative;">
+                                    <span class="show-for-mlarge" style="padding-right:.2em;">Kurv</span>
+                                    <span class="fas fa-shopping-basket"></span>
+                                    <span class="cart-badge badge {% if not session.get('cart', [])%}hide{% endif %}">{{session.get('cart', [])|length}}</span>
+                                </a>                    
+                            </li>
+
+                            <li class="global-header-item show-for-medium is-dropdown-submenu-parent">
+                                <a class="global-header-link">Vejledninger</a>
+                                <ul class="vertical menu">
+                                    <li><a href="/guides/searchguide">Hjælp til søgning</a></li>
+                                    <li><a href="/guides/genealogy">Slægtsforskning</a></li>
+                                    <li><a href="/guides/municipality_records">Kommunale sager</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="global-header-item show-for-medium is-dropdown-submenu-parent">
+                                <a class="global-header-link">Om samlingerne</a>
+                                <ul class="vertical menu">
+                                    <li><a href="/about/collections">Om AarhusArkivet</a></li>
+                                    <li><a href="/about/availability">Tilgængelighed</a></li>
+                                    <li><a href="/about/usability">Brugbarhed</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="global-header-item show-for-medium is-dropdown-submenu-parent">
+                                {% if session.get('profile') %}
+                                    <a class="global-header-link user-link">
+                                        <span class="fas fa-user"></span>
+                                        <span>{{session['profile'].get('name')}}</span>
+                                    </a>
+                                    <ul class="vertical menu align-right">
+                                        <li><a href="/users/me">Min profil</a></li>
+                                        <li><a href="/users/me/cart">Min kurv</a></li>
+                                        <!-- <li><a href="/users/me/orders">Mine bestillinger</a></li> -->
+                                        <li><a href="/users/me/bookmarks">Mine bogmærker</a></li>
+                                        <li><a href="/users/me/searches">Mine søgninger</a></li>
+                                        {% if admin %}
+                                            <li><a href="/admin/orders">Bestillinger</a></li>
+                                            <li><a href="/admin/users">Brugere</a></li>
+                                        {% endif %}
+                                        <li><a href="/logout" style="border-top:1px solid #cacaca;background-color:#f2f2f2;">Log ud</a></li>
+                                    </ul>
+                                {% else %}
+                                    <a class="global-header-link user-link">Login</a>
+                                    <ul class="vertical menu align-right">
+                                        <li><a href="/login">Login</a></li>
+                                        <li><a href="/signup">Opret ny bruger</a></li>
+                                    </ul>
+                                {% endif %}
+                            </li>
+
+                            <!-- Hamburger-icon, only visible on small screens -->
+                            <li class="global-header-item hide-for-medium">
+                                <a class="global-header-link" data-toggle="menubar">
+                                    <span class="fas fa-bars"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page-content -->
+            <div class="page-content" style="min-height:90vh;">
+                {% block content %}{% endblock content %}
+            </div>
+
+            <!-- Page-footer -->
+            <footer class="global-footer hide-for-print">
+                <div class="grid-padding-x grid-x align-center-middle" style="min-height: 160px;max-width: 1440px;margin:0 auto;">
+                    <div class="cell small-order-3 medium-6 {% if page == 'searchpage' %}xlarge-order-1 xlarge-3{% else %}large-order-1 large-3{% endif %}">
+                        <a href="http://www.aarhus.dk/stadsarkivet"><img src="/static/img/as_logo_white_300px.png"></a>
+                    </div>
+                    <div class="cell small-order-1 medium-6 {% if page == 'searchpage' %}xlarge-order-2 xlarge-3{% else %}large-order-2 large-3{% endif %} align-self-top">
+                        <ul class="menu vertical contact">
+                            <li class="heading">aarhus stadsarkiv</li>
+                            <li>Hack Kampmanns Plads 2</li>
+                            <li>DOKK1, niveau 2.2</li>
+                            <li>8000 Aarhus C</li>
+                            <li>Tlf.: 89404800</li>
+                            <li>Mail: stadsarkiv@aarhus.dk</li>
+                            <li>Web: aarhusstadsarkiv.dk</li>
+                        </ul>
+                    </div>
+                    <div class="cell small-order-2 medium-6 {% if page == 'searchpage' %}xlarge-order-3 xlarge-3{% else %}large-order-3 large-3{% endif %} align-self-top">
+                        <ul class="menu vertical readingroom">
+                            <li class="heading">læsesal</li>
+                            <!-- <li><span class="left">Mandag</span><span class="right">Lukket</span></li> -->
+                            <li><span class="left">Tirsdag</span><span class="right">9.00 - 16.00</span></li>
+                            <li><span class="left">Onsdag</span><span class="right">9.00 - 16.00</span></li>
+                            <li><span class="left">Torsdag</span><span class="right">9.00 - 16.00</span></li>
+                            <!-- <li><span class="left">Fredag</span><span class="right">Lukket</span></li> -->
+                            <!-- <li><span class="left">Weekend</span><span class="right">Lukket</span></li> -->
+                        </ul>
+                        <div class="" style="padding-top: 1.2rem;">
+                            <a href="https://www.facebook.com/aarhusstadsarkiv/" style="color:white;padding-right: .6rem;"><span class="fab fa-facebook fa-2x"></span></a>
+                            <a href="https://www.instagram.com/aarhusstadsarkiv/?hl=da" style="color:white;"><span class="fab fa-instagram fa-2x"></span></a>
+                        </div>
+                    </div>
+                    <div class="cell small-order-4 medium-6 {% if page == 'searchpage' %}xlarge-order-4 xlarge-3{% else %}large-order-4 large-3{% endif %}">
+                        <a href="http://sallingfondene.dk"><img src="/static/img/Salling_Fondene_white_300px.png"></a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notifications" class="hide-for-print" style="position:fixed;z-index: 5;bottom:20px;right:20px;">
+        <!-- flash - notifications -->
+        <ul id="notificationlist" style="list-style-type: none;margin:0;padding:0;">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                <li class="success callout" data-closable>
+                    <p>{{message}}</p>
+                    <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </li>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
+        </ul>
+    </div>
+
+    <!-- Feedback-form -->
+    <div style="display:none;" class="hide-for-print">
+        <a class="button secondary" style="position:fixed;bottom:.5em;right:.5em;" id="feedback-trigger" title="Send feedback" data-open="feedback-modal">Feedback</a>
+        <div id="feedback-modal" class="reveal small" data-reveal>
+            <h4>Feedback</h4>
+            <p>Hvad vil du fortælle om?</p>
+            <input type="text" name="feedback_text"/>
+            <button class="button small" data-action="feedback" data-url="{{session.get('current_url')}}">Send</button>
+            <button class="close-button" data-close aria-label="Close modal" type="button">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- /<script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script> -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.2/js/foundation.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">$(document).foundation();</script>
+    <script type="text/javascript">onload=function(){
+        var e=document.getElementById("refresh");
+        if(e.value=="no")e.value="yes";
+        else{e.value="no";location.reload(true);}};
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+    <script>
+        window.addEventListener("load", function(){
+            window.cookieconsent.initialise({
+              "palette": {
+                "popup": {
+                  "background": '#252e39',
+                  "text": "#fefefe"
+                },
+                "button": {
+                  "background": "#ff8c00",
+                  "text": "#fefefe"
+                }
+              },
+              "content": {
+                "message": "Vi bruger cookies.",
+                "dismiss": "Ok!",
+                "link": "Læs mere",
+                "href": "/cookies"
+              }
+            });
+        });
+    </script>
+
+    <script src="{{ url_for('static', filename='js/vendor/typeahead.bundle.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.7/dist/js/lightgallery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.7/modules/lg-video.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.7/modules/lg-thumbnail.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.7/modules/lg-zoom.min.js"></script>
+    <script src="{{ url_for('static', filename='js/autosuggest.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/application.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dates.js') }}"></script>
+    <!-- <script src="{{ url_for('static', filename='js/split_view.js') }}"></script> -->
+    <script src="{{ url_for('static', filename='js/page_number.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bookmarks.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/searches.js') }}"></script>
+    <!-- <script src="{{ url_for('static', filename='js/orders.js') }}"></script> -->
+</body>
+</html>

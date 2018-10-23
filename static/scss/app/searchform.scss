@@ -1,0 +1,47 @@
+.global-search-form {
+    background-color: $white;
+    margin-bottom: 0;
+    input {
+        height: 100%;
+        padding: .4rem;
+        margin-bottom: 0;
+        border: 0;
+        box-shadow: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        -ms-appearance: none;
+        -o-appearance: none;
+        appearance: none;
+        -webkit-tap-highlight-color: transparent;
+
+        &:focus {
+            outline: none;
+            border: 0;
+            box-shadow: none;
+        }
+
+        -webkit-input-placeholder,
+        -moz-placeholder,
+        -ms-input-placeholder,
+        -moz-placeholder,
+        &::placeholder {
+            color: #606060;
+        }
+    }
+    button {
+        color: $black;
+        opacity: .7;
+        background-color: $white;
+        outline: none;
+        padding: 0 .5rem;
+        &:focus {
+            color: $black;
+            background-color: $white;
+        }
+        &:hover,
+        &.activated {
+            color: $white;
+            background-color: green;
+        }
+    }
+}

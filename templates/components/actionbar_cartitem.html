@@ -1,0 +1,31 @@
+{% set vars = {'storage_id': False } %}
+{% for _dict in record.get('resources', []) %}
+    {% if _dict.get('storage_id') %}
+        {% if vars.update({'storage_id': _dict['storage_id'][0]}) %}{% endif %}
+    {% endif %}
+{% endfor %}
+
+
+<div class="actionbar_cartitem hide-for-print" style="padding:.5rem;">
+    <!-- cart-handler -->
+    <button data-resource-id="{{record.id}}" class="button small secondary cart-handler" data-action="remove-from-cart">
+        <span class="fas fa-times icon-left"></span><span>Fjern fra kurven</span>
+    </button>
+    {% if session.get('profile') %}
+        <!-- bookmark-handlers -->
+        <button data-resource-id="{{record.id}}" class="button small bookmark-handler {% if record.id in session.get('bookmarks', []) %}hide{% endif %}" data-action="create-bookmark">
+            <span class="far fa-bookmark icon-left"></span><span>Bogmærk</span>
+        </button>
+
+        <!-- order-handler -->
+        {# only create-order, as delete-order might be mistaken for removing bookmark #}
+        {# TODO: NOT IMPLEMENTED YET
+        {% if record.availability.id == 2 and (record.id not in session.get('orders', [])) %}
+            <button data-resource-id="{{record.id}}" data-storage-id="{{vars.storage_id}}" class="button small order-handler" data-action="create-order">
+                <span class="far fa-check-square icon-left"></span><span>Bestil materialet</span>
+            </button>
+        {% endif %}
+        #}
+
+    {% endif %}
+</div>

@@ -1,0 +1,30 @@
+<div class="grid-x grid-padding-x" role="navigation" aria-label="Pagination">
+    <div class="cell shrink">
+        <a class="button hollow {% if not first %}disabled{% endif %}" href="/search?{{first}}" aria-label="Første side" style="padding:.5rem .7rem;">
+            <i class="fas fa-step-backward fa-sm"></i>
+            <span class="show-for-medium">Første</span>
+            <span class="show-for-sr">Gå til forrige side</span>
+        </a>
+    </div>
+    <div class="cell shrink">
+        <a class="button hollow {% if not previous %}disabled{% endif %}" href="/search?{{previous}}" aria-label="Forrige side" style="padding:.5rem .7rem;">
+            <i class="fas fa-angle-left"></i>
+            <span class="show-for-medium">Forrige</span>
+            <span class="show-for-sr">Gå til forrige side</span>
+        </a>
+    </div>
+    <div class="cell shrink">
+        <a class="button hollow {% if not next %}disabled{% endif %}" href="/search?{{next}}" aria-label="Næste side"  style="padding:.5rem .7rem;">
+            <span class="show-for-medium">Næste</span>
+            <span class="show-for-sr">Gå til forrige side</span>
+            <i class="fas fa-angle-right"></i>
+        </a>
+    </div>
+    <div class="cell shrink">
+        <a class="button hollow {% if not last %}disabled{% endif %}" href="/search?{{last}}" aria-label="Sidste side" style="padding:.5rem .7rem;">
+            <span class="show-for-medium">Sidste</span>
+            <span class="show-for-sr">Gå til forrige side</span>
+            <i class="fas fa-step-forward fa-sm"></i>
+        </a>
+    </div>
+</div>

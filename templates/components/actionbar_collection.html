@@ -1,0 +1,10 @@
+<div class="actionbar_collection hide-for-print">
+    <a class="button small" href="/search?collection={{r.id}}">
+        <span class="fas fa-search icon-left"></span><span>Søg i samlingen</span>
+    </a>
+	    {% if r.structure %}
+	    <a class="button small" href="#series"  data-smooth-scroll>
+	        <span class="fas fa-list icon-left"></span><span>Hop til arkivserier</span>
+	    </a>
+    {% endif %}
+</div>

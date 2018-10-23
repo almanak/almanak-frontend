@@ -1,0 +1,60 @@
+{# Single gallery-listitem containing a record #}
+
+<div class="listitem card" style="border: 1px solid darkkhaki">
+    <a href="/records/{{record.id}}">
+        {% if record.thumbnail %}
+            <img src="{{record.thumbnail}}" style="max-height: 200px;">
+        {% else %}
+            <i class="material-icons">insert_drive_file</i>
+        {% endif %}
+
+        <div class="card-section">
+            {% if record.label %}
+                <p class="">{{record.label|truncate(200)}}</p>
+            {% endif %}
+
+            {% if record.summary %}
+                <p class="">{{record.summary|truncate(300)}}</p>
+
+            {% elif record.description %}
+                <p class="">{{record.description|truncate(300)}}</p>
+            {% endif %}
+
+            {% if not (record.summary or record.label) %}
+                {% if record.desc_notes %}
+                    <p class="summary">{{record.desc_notes|truncate(300)}}</p>
+                {% else %}
+                    <p class="summary">Materialet er ikke beskrevet</p>
+                {% endif %}
+            {% endif %}
+
+            {% if record.content_type %}
+                <p>Type: {{record.content_type}}</p>
+            {% endif %}
+
+            <p class="">
+            {% if record.date_from %}
+                {% if record.date_to %}
+                    {% if record.date_to == record.date_from %}
+                        <span>{{record.date_from}}</span>
+                    {% elif record.date_from[0:7] == record.date_to[0:7] %}
+                        <span>{{record.date_from[0:7]}}</span>
+                    {% elif record.date_from[0:4] == record.date_to[0:4] and record.date_from[5:10] == '01-01' %}
+                        <span>{{record.date_from[0:4]}}</span>
+                    {% elif record.date_from[5:10] == '01-01' and record.date_to[5:10] == '12-31' %}
+                        <span>{{record.date_from[0:4]}} ~ {{record.date_to[0:4]}}</span>
+                    {% else %}
+                        <span>{{record.date_from}} ~ {{record.date_to}}</span>
+                    {% endif %}
+                {% else %}
+                    <span>{{record.date_from}} ~</span>
+                {% endif %}
+            {% elif record.date_to %}
+                <span>~ {{record.date_to}}</span>
+            {% else %}
+                <span>Uden datering</span>
+            {% endif %}
+            </p>
+        </div>
+    </a>
+</div>

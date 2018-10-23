@@ -1,0 +1,33 @@
+{# This template uses 'urlencode'-filter! #}
+
+<ul class="series menu vertical accordion-menu" data-accordion-menu data-multi-open="false">
+    {% for item in r.series recursive %}
+        {% if item.children %}
+            <li class="facet-trigger">
+                <a href="#">
+                    <div class="media-object">
+                        <div class="media-object-section main-section">{{item.label}}</div>
+                    </div>
+                </a>
+                <ul class="menu vertical nested">
+                    
+                    <li class="facet-parent">
+                        <a href="/search?collection={{r.id}}&series={{item.path|urlencode}}">
+                            <div class="media-object">
+                                <div class="media-object-section main-section">Vælg alt herunder</div>
+                            </div>
+                        </a>
+                    </li>
+                    {{ loop( item.children ) }}
+                </ul>
+        {% else %}
+            <li>
+                <a href="/search?collection={{r.id}}&series={{item.path|urlencode}}">
+                    <div class="media-object">
+                        <div class="media-object-section main-section">{{item.label}}</div>
+                    </div>
+                </a>
+        {% endif %}
+        </li>
+    {% endfor %}
+</ul>

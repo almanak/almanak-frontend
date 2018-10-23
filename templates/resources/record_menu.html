@@ -1,0 +1,18 @@
+{# Record-menu #}
+<li><a href="#description">Beskrivelse</a></li>
+
+{% if r.locations or r.people or r.events or r.organisations or r.objects %}
+	<li><a href="#relations">Relationer</a></li>
+{% endif %}
+
+<li><a href="#copyright">Ophavsret</a></li>
+<li><a href="#judicial_status">Juridisk beskyttelse</a></li>
+<li><a href="#availability">Tilgængelighed</a></li>
+
+{% if r.availability.get('id') == 2 and r.other_legal_restrictions.get('id') == 1 and r.contractual_status.get('id') > 2 %}
+	<li id="ordering-link"><a href="#ordering">Bestilling</a></li>
+{% endif %}
+
+{% if session.get('profile') and 'employee' in session['profile'].get('roles') %}
+	<li><a href="#administration">Administration</a></li>
+{% endif %}

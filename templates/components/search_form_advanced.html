@@ -1,0 +1,13 @@
+{# Advanced search form. Used on advanced search page and with zero hits #}
+<form class="" method="GET" action="/search">
+    
+    <input class="global-search-field media-object-section main-section" type="search" name="q" placeholder="{% if collection_search %}Søg i denne samling{% elif page == 'homepage' %}Søg i AarhusArkivets samlinger{% else %}Søg i samlingerne{% endif %}" value="{% if query %}{{query}}{% endif %}" autocomplete="off"/>
+    <button class="global-search-button button media-object-section">
+        <span class="fas fa-search"></span>
+    </button>
+    {% if page == 'searchpage' %}
+        {% for tup in params %}
+            {% if tup[0] not in ['q', 'start'] %}<input type="hidden" name="{{tup[0]}}" value="{{tup[1]}}">{% endif %}
+        {% endfor %}
+    {% endif %}
+</form>

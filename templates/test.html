@@ -1,0 +1,9 @@
+<div>Page: {{page}}</div>
+<div>JSON</div>
+
+<dl>
+{% for k, v in json_data.items() %}
+    <dt>{{k}}</dt>
+    <dd>{{v}}</dd>
+{% endfor %}
+</dl>

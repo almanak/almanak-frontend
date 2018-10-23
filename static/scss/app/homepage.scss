@@ -1,0 +1,78 @@
+.homepage-hero {
+    .cell {
+        padding-left: 0;
+        padding-right: 0;
+        z-index: 2;
+    }
+
+    form {
+        padding: .4em;
+        border-bottom: 1px solid $medium-gray;
+        box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    a {
+        display: inline-block;
+        float: right;
+        padding-top: .3rem;
+        margin-right: .4rem;
+        color: darken($dark-gray, 35%);
+        border-bottom: 1px solid darken($dark-gray, 35%);
+    }
+
+    @include breakpoint(medium) {
+        .cell {
+            padding: 1rem;
+            background-color: rgba(51, 51, 51, 0.75);
+        }
+
+        form {
+            padding: 0;
+            border-bottom: 0;
+            box-shadow: none;
+        }
+
+        a {
+            color: $white;
+            border-bottom: 1px solid $white;
+        }
+
+        margin-top: -10rem;
+    }
+
+    @include breakpoint(mlarge) {
+        margin-top: -13rem;
+    }
+
+    @include breakpoint(large) {
+        margin-top: -16rem;
+    }
+
+    @include breakpoint(xlarge) {
+        margin-top: -19rem;
+    }
+}
+
+.homepage-list {
+    max-width: 1440px;
+    margin:0 auto;
+    .cell {
+        padding: 2em;
+    }
+    h4 {
+        margin-bottom:-2em;
+        color: darken($dark-gray, 30%);
+    }
+    @include breakpoint(medium) {
+        margin-top: 2rem;
+    }
+    @include breakpoint(mlarge) {
+        margin-top: 5rem;
+    }
+    @include breakpoint(large) {
+        margin-top: 8rem;
+    }
+    @include breakpoint(xlarge) {
+        margin-top: 11rem;
+    }
+}

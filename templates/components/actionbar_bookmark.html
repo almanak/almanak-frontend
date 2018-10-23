@@ -1,0 +1,24 @@
+{% set vars = {'storage_id': False } %}
+{% for _dict in record.get('resources', []) %}
+    {% if _dict.get('storage_id') %}
+        {% if vars.update({'storage_id': _dict['storage_id'][0]}) %}{% endif %}
+    {% endif %}
+{% endfor %}
+
+<div class="actionbar_bookmark hide-for-print" style="padding:.5rem;">
+    <!-- bookmark-handler -->
+    <button data-resource-id="{{record.id}}" class="button small secondary bookmark-handler" data-action="delete-bookmark">
+        <span class="fas fa-times icon-left"></span><span>Fjern bogmærke</span>
+    </button>
+
+    <!-- order-handler -->
+    {# only create-order, as delete-order might be mistaken for removing bookmark #}
+    {# not implemented yet
+    {% if record.availability.id == 2 and (record.id not in session.get('orders', [])) %}
+        <button data-resource-id="{{record.id}}" data-storage-id="{{vars.storage_id}}" class="button small order-handler" data-action="create-order">
+            <span class="far fa-check-square icon-left"></span><span>Bestil materialet</span>
+        </button>
+    {% endif %}
+    #}
+
+</div>

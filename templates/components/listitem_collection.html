@@ -1,0 +1,68 @@
+{#
+    Single listitem, generated from the minimal listview of a record, returned by
+    the search-service. Only used by '/search'
+    Needs to be wrapped by a '.listitem'
+#}
+
+{% set icon = ICONS[record.content_types[0]] %}
+
+<a class="media-object" href="/records/{{record.id}}">
+    {% if record.thumbnail and (record.availability > 3 or readingroom or session.get('is_employee')) %}
+        <div class="media-object-section" style="width:10em;">
+            <img src="{{record.thumbnail}}" style="width:100%">
+        </div>
+    {% endif %}
+
+    <div class="media-object-section main-section">
+        {% if record.label %}
+            <p class="heading">{{record.label|truncate(200)}}</p> 
+        {% endif %}
+
+        {% if record.summary %}
+            <p class="summary">{{record.summary|truncate(300)}}</p>
+        {% endif %}
+
+        {% if not (record.summary or record.label) %}
+            {% if record.desc_notes %}
+                <p class="summary">{{record.desc_notes|truncate(300)}}</p>
+            {% else %}
+                <p class="summary">Materialet er ikke beskrevet</p>
+            {% endif %}
+        {% endif %}
+
+        {% if record.collectors_label %}
+            <p class="collector">{{record.collectors_label}}</p>
+        {% endif %}
+
+        {% if record.content_types %}
+            <p class="content_type">
+                <i class="content_type-icon {{icon.get('icon')}}"></i>
+                <span>{{icon.get('label')|capitalize()}}</span>
+            </p>
+        {% endif %}
+
+        <p class="date">
+        {% if record.date_from %}
+            {% if record.date_to %}
+                {% if record.date_to == record.date_from %}
+                    <span>{{record.date_from[0:4]}}-{{record.date_from[4:6]}}-{{record.date_from[6:8]}}</span>
+                {% elif record.date_from[0:6] == record.date_to[0:6] %}
+                    <span>{{record.date_from[0:4]}}-{{record.date_from[4:6]}}</span>
+                {% elif record.date_from[0:4] == record.date_to[0:4] and record.date_from[4:8] == '0101' %}
+                    <span>{{record.date_from[0:4]}}</span>
+                {% elif record.date_from[4:8] == '0101' and record.date_to[4:8] == '1231' %}
+                    <span>{{record.date_from[0:4]}} ~ {{record.date_to[0:4]}}</span>
+                {% else %}
+                    <span>{{record.date_from[0:4]}}-{{record.date_from[4:6]}}-{{record.date_from[6:8]}} ~ {{record.date_to[0:4]}}-{{record.date_to[4:6]}}-{{record.date_to[6:8]}}</span>
+                {% endif %}
+            {% else %}
+                <span>{{record.date_from[0:4]}}-{{record.date_from[4:6]}}-{{record.date_from[6:8]}} ~</span>
+            {% endif %}
+        {% elif record.date_to %}
+            <span>~ {{record.date_to[0:4]}}-{{record.date_to[4:6]}}-{{record.date_to[6:8]}}</span>
+        {% else %}
+            <span>Uden datering</span>
+        {% endif %}
+        </p>
+    </div>
+</a>

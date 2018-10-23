@@ -1,0 +1,34 @@
+<form id="date-form" method="get" action="/search">
+    <div class="grid-x">
+        <label for="year_from" class="cell">Tidligste dato</label>
+        <input class="small-4 cell" type="number" name="year_from" value="{% if date_from %}{{date_from[0:4]}}{% endif %}" placeholder="1600" min="1500" max="2018" aria-describedby="dateFromHelp">
+        <span class="small-1 cell text-center">-</span>
+        <input class="auto cell" type="number" name="month_from" value="{% if date_from %}{{date_from[4:6]|int}}{% endif %}" placeholder="01" min="1" max="12">
+        <span class="small-1 cell text-center">-</span>
+        <input class="auto cell" type="number" name="day_from" value="{% if date_from %}{{date_from[6:8]|int}}{% endif %}" placeholder="01" min="1" max="31">
+    </div>
+    <p class="help-text" id="dateFromHelp">Indtast minimum et fire-cifret årstal</p>
+
+    <div class="grid-x">
+        <label for="year_to" class="cell">Seneste dato</label>
+        <input class="small-4 cell" type="number" name="year_to" value="{% if date_to %}{{date_to[0:4]}}{% endif %}" placeholder="2017" min="1500" max="2018" aria-describedby="dateToHelp">
+        <span class="small-1 cell text-center">-</span>
+        <input class="auto cell" type="number" name="month_to" value="{% if date_to %}{{date_to[4:6]|int}}{% endif %}" placeholder="12" min="1" max="12">
+        <span class="small-1 cell text-center">-</span>
+        <input class="auto cell" type="number" name="day_to" value="{% if date_to %}{{date_to[6:8]|int}}{% endif %}" placeholder="31" min="1" max="31">
+    </div>
+    <p class="help-text" id="dateToHelp">Indtast minimum et fire-cifret årstal</p>
+
+    {% if params %}
+        {% for tup in params %}
+            {% if tup[0] != 'start' %}<input type="hidden" name="{{tup[0]}}" value="{{tup[1]}}">{% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {# TODO: If all date-fields are empty, submit must be disabled #}
+    {% if not (date_from or date_to) %}
+        <button class="button expanded secondary" type="submit">Søg</button>
+    {% else %}
+        <button class="button expanded secondary" type="submit">Opdatér</button>
+    {% endif %}
+</form>

@@ -1,0 +1,124 @@
+{# View - specific for organisation #}
+
+{# Image and core-data #}
+<div class="record-container" id="resource-container">
+    <div class="grid-x grid-padding-x">
+        <div class="cell {{breakpoints_image}} resource-representation text-center">
+            {% if r.portrait %}
+                {% if r.portrait is string %}
+                    {% set image = r.portrait %}
+                {% else %}
+                    {% set image = r.portrait[0] %}
+                {% endif %}
+
+                <div id="single-image" style="position: relative;">
+                    <a href="{{image|replace('http://', 'https://')}}">
+                        <img class="resource-portrait" src="{{image|replace('http://', 'https://')}}"/>
+                        <div class="play-icon">
+                            <span class="fas fa-search-plus fa-2x"></span>
+                        </div>
+                    </a>
+                </div>
+            {% else %}
+                <i class="resource-icon far fa-building fa-9x"></i>
+            {% endif %}
+        </div>
+        <div class="cell {{breakpoints_core}} resource-core">
+
+            {% if r.display_label %}
+                <h6 class="resource-title">{{r.display_label}}</h6>
+            {% endif %}
+
+            {% if r.alt_names %}
+                <div class="media-object">
+                    <div class="media-object-section app_keylabel">Pseudonym</div>
+                    <div class="media-object-section main-section">
+                        {% for item in r.alt_names %}
+                            <div>{{item}}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if r.is_creator %}
+            <div class="media-object">
+                <div class="media-object-section app_keylabel">Arkivskaber</div>
+                <div class="media-object-section main-section">
+                    <div><a href="/search?collectors={{r.id}}">Se hvilke arkiver, denne organisation har samlet</a></div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if r.is_creative_creator %}
+            <div class="media-object">
+                <div class="media-object-section app_keylabel">Kreativt ophav</div>
+                <div class="media-object-section main-section">
+                    <div><a href="/search?creators={{r.id}}">Se hvilke arkiver, denne organisation har skabt</a></div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if r.date_from %}
+                <div class="media-object">
+                    <div class="media-object-section app_keylabel">Oprettet</div>
+                    <div class="media-object-section main-section">{{r.date_from}}</div>
+                </div>
+            {% endif %}
+
+            {% if r.date_to %}
+                <div class="media-object">
+                    <div class="media-object-section app_keylabel">Nedlagt</div>
+                    <div class="media-object-section main-section">{{r.date_to}}</div>
+                </div>
+            {% endif %}
+
+            {% if r.industry %}
+                <div class="media-object">
+                    <div class="media-object-section app_keylabel">Branche</div>
+                    <div class="media-object-section main-section">
+                        {% for item in r.industry %}
+                            <div>{{item}}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    {# Description #}
+    {% if r.description %}
+        <h5 id="description">Beskrivelse</h5>
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Beskrivelse</div>
+            <div class="media-object-section main-section" style="white-space: pre-line;">
+                {{ r.description|urlize(nofollow=True, target='_blank') }}
+            </div>
+        </div>
+    {% endif %}
+
+    {# Sources #}
+    {% if r.sources %}
+        <h5 id="sources">Kilder</h5>
+        <div class="media-object">
+            <div class="media-object-section main-section">
+                {% for item in r.sources %}
+                    <div>{{ item.replace('http://', 'https://')|urlize(45) }}</div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {# Extension-data #}
+    {% if r.ext_data %}
+        <h5 id="extension">Udvidet data</h5>
+        {% for k, v in r.ext_data.items() %}
+            {% if v %}
+                <div class="media-object">
+                    <div class="media-object-section app_keylabel">{{k}}</div>
+                    <div class="media-object-section main-section">{{v}}</div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</div>

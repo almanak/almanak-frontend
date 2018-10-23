@@ -1,0 +1,99 @@
+{% extends '_base.html' %}
+
+{% if subpage == 'about' %}
+    {% set title = "Om hjemmesiden" %}
+{% elif subpage == 'collections' %}
+    {% set title = "Om samlingerne" %}
+{% elif subpage == 'usability' %}
+    {% set title = "Brugbarhed" %}
+{% elif subpage == 'availability' %}
+    {% set title = "Tilgængelighed" %}
+{% endif %}
+
+{% block content %}
+    <div class="media-object app-page-container">
+        <div class="media-object-section show-for-large app-page-menu">
+            <ul class="menu vertical">
+            {% if subpage == 'collections' %}
+                <li class="menu-text">
+                    <span class=""></span>
+                    <span>Om arkivet</span>                    
+                </li>                    
+            {% else %}
+                <li>
+                    <a href="/about/collections">
+                        <span class=""></span>
+                        <span>Om arkivet</span>  
+                    </a>
+                </li>
+            {% endif %}
+
+            {% if subpage == 'availability' %}
+                <li class="menu-text">
+                    <span class=""></span>
+                    <span>Hvor er materialerne?</span>                    
+                </li>                    
+            {% else %}
+                <li>
+                    <a href="/about/availability">
+                        <span class=""></span>
+                        <span>Hvor er materialerne?</span>  
+                    </a>
+                </li>
+            {% endif %}
+
+            {% if subpage == 'usability' %}
+                <li class="menu-text">
+                    <span class=""></span>
+                    <span>Hvad må man bruge dem til?</span>                    
+                </li>
+            {% else %}
+                <li>
+                    <a href="/about/usability">
+                        <span class=""></span>
+                        <span>Hvad må man bruge dem til?</span>  
+                    </a>
+                </li>
+            {% endif %}
+            </ul>
+        </div>
+
+        <div class="media-object-section main-section">
+            <div class="media-object">
+                <div class="media-object-section main-section">
+                    {% if subpage == 'collections' %}
+                        {% include 'subpages/collections.html' %}
+
+                    {% elif subpage == 'availability' %}
+                        {% include 'subpages/availability.html' %}
+
+                    {% elif subpage == 'usability' %}
+                        {% include 'subpages/usability.html' %}
+
+                    {% endif %}
+                </div>
+
+                <div class="media-object-section show-for-xlarge hide-for-print app-page-submenu">
+                    <div data-sticky-container>
+                        <nav class="sticky toc" data-sticky data-margin-top="4" data-anchor="app-page-container">
+                            <h6 class="text-right toc-heading">indhold</h6>
+                            <ul class="vertical menu align-right toc-list" data-magellan>
+                            {% if subpage == 'collections' %}
+                                {% include 'subpages/collections_menu.html' %}
+
+                            {% elif subpage == 'availability' %}
+                                {% include 'subpages/availability_menu.html' %}
+
+                            {% elif subpage == 'usability' %}
+                                {% include 'subpages/usability_menu.html' %}
+
+                            {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

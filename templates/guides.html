@@ -1,0 +1,97 @@
+{% extends '_base.html' %}
+
+{% if subpage == 'searchguide' %}
+    {% set title = "Hjælp til søgning" %}
+{% elif subpage == 'genealogy' %}
+    {% set title = "Slægtsforskning" %}
+{% elif subpage == 'municipality_records' %}
+    {% set title = "Kommunearkivet" %}
+{% endif %}
+
+{% block content %}
+    <div class="media-object app-page-container">
+        <div class="media-object-section show-for-large app-page-menu">
+            <ul class="menu vertical">
+            {% if subpage == 'searchguide' %}
+                <li class="menu-text">
+                    <span class=""></span>
+                    <span>Hjælp til søgning</span>                    
+                </li>                    
+            {% else %}
+                <li>
+                    <a href="/guides/searchguide">
+                        <span class=""></span>
+                        <span>Hjælp til søgning</span>  
+                    </a>
+                </li>
+            {% endif %}
+
+            {% if subpage == 'genealogy' %}
+                <li class="menu-text">
+                    <span class=""></span>
+                    <span>Slægtsforskning</span>                    
+                </li>                    
+            {% else %}
+                <li>
+                    <a href="/guides/genealogy">
+                        <span class=""></span>
+                        <span>Slægtsforskning</span>  
+                    </a>
+                </li>
+            {% endif %}
+
+            {% if subpage == 'municipality_records' %}
+                <li class="menu-text">
+                    <span class=""></span>
+                    <span>Kommunearkivet</span>                    
+                </li>                    
+            {% else %}
+                <li>
+                    <a href="/guides/municipality_records">
+                        <span class=""></span>
+                        <span>Kommunearkivet</span>  
+                    </a>
+                </li>
+            {% endif %}
+            </ul>
+        </div>
+
+        <div class="media-object-section main-section">
+            <div class="media-object">
+                <div class="media-object-section main-section">
+                    {% if subpage == 'searchguide' %}
+                        {% include 'subpages/searchguide.html' %}
+
+                    {% elif subpage == 'genealogy' %}
+                        {% include 'subpages/genealogy.html' %}
+
+                    {% elif subpage == 'municipality_records' %}
+                        {% include 'subpages/municipality_records.html' %}
+
+                    {% endif %}
+                </div>
+
+                <div class="media-object-section show-for-xlarge hide-for-print app-page-submenu">
+                    <div data-sticky-container>
+                        <nav class="sticky toc" data-sticky data-margin-top="4" data-anchor="app-page-container">
+                            <h6 class="text-right toc-heading">indhold</h6>
+                            <ul class="vertical menu align-right toc-list" data-magellan>
+                            {% if subpage == 'searchguide' %}
+                                {% include 'subpages/searchguide_menu.html' %}
+
+                            {% elif subpage == 'genealogy' %}
+                                {% include 'subpages/genealogy_menu.html' %}
+
+                            {% elif subpage == 'municipality_records' %}
+                                {% include 'subpages/municipality_records_menu.html' %}
+
+                            {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

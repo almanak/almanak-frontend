@@ -1,0 +1,182 @@
+<ul class="facets-v2 filters menu vertical accordion-menu" data-accordion-menu data-multi-open="false">
+    {% for f in filters %}
+        <li class="{% if f.negated %}filter-negated{% else %}filter{% endif %}">
+        <!-- <li class="{% if f.negated %}facet-remove{% else %}facet-trigger{% endif %}"> -->
+            <a class="filter-title" alt="{{f.label}}" title="{{f.label}}">
+                <!-- <span class="media-object-section main-section"> -->
+                    {% if f.key == 'date_from' %}
+                        <span class="far fa-calendar-alt"></span>
+                        {% if f.value[-1:-5] == '0101' %}
+                            {{f.value[0:4]}} og senere
+                        {% else %}
+                            {{f.value[0:4]}}-{{f.value[4:6]}}-{{f.value[6:8]}} og senere
+                        {% endif %}
+                    {% elif f.key == 'date_to' %}
+                        <span class="far fa-calendar-alt"></span>
+                        {% if f.value[-1:-5] == '1231' %}
+                            {{f.value[0:4]}} og tidligere
+                        {% else %}
+                            {{f.value[0:4]}}-{{f.value[4:6]}}-{{f.value[6:8]}} og tidligere
+                        {% endif %}
+                    {% else %}
+                        {% if f.key == 'usability' %}
+                            {% if f.value in ['2', '3'] %}
+                                <span class="fab fa-creative-commons"></span>
+                            {% elif f.value == '4' %}
+                                <span class="far fa-copyright"></span>
+                            {% else %}
+                                <span class="fas fa-lock-open"></span>
+                            {% endif %}
+                        {% elif f.key == 'availability' %}
+                            {% if f.value == '2' %}
+                                <span class="fas fa-briefcase"></span>
+                            {% elif f.value == '3' %}
+                                <span class="fas fa-home"></span>
+                            {% else %}
+                                <span class="fas fa-desktop"></span>
+                            {% endif %}
+                        {% elif f.key == 'people' %}
+                            <span class="far fa-user"></span>
+                        {% elif f.key == 'locations' %}
+                            <span class="fas fa-map-marker-alt"></span>
+                        {% elif f.key == 'events' %}
+                            <span class="far fa-calendar"></span>
+                        {% elif f.key == 'organisations' %}
+                            <span class="far fa-building"></span>
+                        {% elif f.key == 'content_types' %}
+                            {% if f.value in ["61", "66", "65", "73", "64", "70", "71", "100", "62", "68", "67", "69", "63", "74", "72"] %}
+                                <span class="far fa-image"></span>
+                            {% elif f.value in ["49", "55", "51", "53", "50", "52", "56", "60", "58", "59", "54", "57"] %}
+                                <span class="far fa-file-alt"></span>
+                            {% elif f.value in ["95", "98", "96", "97"] %}
+                                <span class="fas fa-laptop"></span>
+                            {% elif f.value in ["10", "13", "12", "16", "15", "11", "17", "14"] %}
+                                <span class="fas fa-gavel"></span>
+                            {% elif f.value in ["1", "5", "2", "8", "7", "4", "9", "6", "3"] %}
+                                <span class="far fa-folder-open"></span>
+                            {% elif f.value in ["75", "80", "76", "79", "77", "78"] %}
+                                <span class="far fa-map"></span>
+                            {% elif f.value in ["87", "101", "93", "89", "90", "92", "91", "94", "88"] %}
+                                <span class="fas fa-film"></span>
+                            {% elif f.value in ["36", "41", "40", "44", "37", "46", "45", "47", "43", "48", "39", "38", "42"] %}
+                                <span class="fas fa-book"></span>
+                            {% elif f.value in ["18", "27", "22", "28", "20", "24", "25", "19", "23", "21", "26"] %}
+                                <span class="fab fa-leanpub"></span>
+                            {% elif f.value in ["29", "34", "31", "30", "32", "33", "35"] %}
+                                <span class="far fa-chart-bar"></span>
+                            {% elif f.value in ["99"] %}
+                                <span class="far fa-file"></span>
+                            {% endif %}
+                        {% elif f.key == 'series' %}
+                            <span class="fas fa-list"></span>
+                        {% elif f.key == 'collection' %}
+                            <span class="fas fa-archive"></span>
+                        {% elif f.key == 'subjects' %}
+                            <span class="fas fa-tags"></span>
+                        {% endif %}                    
+        
+                        {% if f.label %}
+                            <span>{{f.label}}</span>
+                        {% else %}
+                            <span>{{f.value}}</span>
+                        {% endif %}
+
+                    {% endif %}
+            </a>
+            <ul class="menu vertical nested {% if loop.first %}is-active{% endif %}">
+                {# Always present #}
+                <li>
+                    <a class="filter-remove" href="/search?{{f.remove_link}}" title="Fjern {{f.label}} som søgefilter">
+                        <div class="media-object">
+                            <div class="media-object-section main-section">Fjern dette søgefilter</div>
+                            <div class="media-object-section filter-icon"><i class="fas fa-times"></i></div>
+                        </div>
+                    </a>
+                </li>
+
+                {# Present on all id-based queryparams #}
+                {% if f.invert_link and f.key not in ['date_from', 'date_to', 'series'] %}
+                    <li>
+                        <a class="filter-inverse" href="/search?{{f.invert_link}}" title="Brug {{f.label}} som {% if f.negated %}positivt{% else%}negativt{% endif %} søgefilter">
+                            <div class="media-object">
+                                <div class="media-object-section main-section">
+                                    {% if f.negated%}
+                                        <span>Vend til positivt filter</span>
+                                    {% else %}
+                                        <span>Vend til negativt filter</span>
+                                    {% endif %}
+                                </div>
+                                <div class="media-object-section filter-icon"><i class="fas fa-exchange-alt"></i></div>
+                            </div>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {# Present on some people and organisations #}
+                {% if f.creator_link %}
+                    <li>
+                        <a class="filter-creator" href="/search?{{f.creator_link}}" title="Se hvad {{f.label}} har været kreativt ophav til">
+                            <div class="media-object">
+                                <div class="media-object-section main-section">Søg som kreativt ophav</div>
+                                <div class="media-object-section filter-icon"><i class="fas fa-paint-brush"></i></div>
+                            </div>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {# Present on some people and organisations #}
+                {% if f.collector_link %}
+                    <li>
+                        <a class="filter-collector" href="/search?{{f.collector_link}}" title="Se hvad {{f.label}} har skabt af arkiver">
+                            <div class="media-object">
+                                <div class="media-object-section main-section">Søg som arkivskaber</div>
+                                <div class="media-object-section filter-icon"><i class="fas fa-archive"></i></div>
+                            </div>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {# If filter has view_link, but no separate url (yet) #}
+                {% if f.view_link and f.key not in ['curators', 'subjects', 'content_types'] %}
+                    {% if f.key == 'usability' %}
+                        {% set label = 'Brug af materialer' %}
+                    {% elif f.key == 'availability' %}
+                        {% set label = 'Tilgængelighed' %}
+                    {% else %}
+                        {% set label = f.label %}
+                    {% endif %}
+                    <li style="background-color: #7db6ca;">
+                        {% if f.key == 'usability' %}
+                            <a class="filter-view" href="/about/usability" title="Læs mere om {{label}} her">                        
+                        {% elif f.key == 'availability' %}
+                            <a class="filter-view" href="/about/availability" title="Læs mere om {{label}} her">
+                        {% else %}
+                            <a class="filter-view" href="{{f.view_link}}" title="Læs mere om {{label}} her">
+                        {% endif %}
+                            <div class="media-object">
+                                <div class="media-object-section main-section">Læs om <span class="filter-label">{{label}}</span></div>
+                                <div class="media-object-section filter-icon"><i class="fas fa-arrow-right"></i></div>
+                            </div>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {# If more than one filter #}
+                {% if filters|length() > 1 and f.key != 'series' %}
+                    <li>
+                        <a class="filter-new" href="/search?{{f.key}}={{f.value}}" title="Ny søgning, kun med dette filter">
+                            <div class="media-object">
+                                <div class="media-object-section main-section">Ny søgning med kun dette filter</div>
+                                <div class="media-object-section filter-icon"><i class="fas fa-asterisk"></i></div>
+                            </div>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {# TODO: If series-filter, enable traversing upwards #}
+
+            </ul>
+        </li>
+
+    {% endfor %}
+</ul>

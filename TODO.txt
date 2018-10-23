@@ -1,0 +1,95 @@
+TODO
+Skriv og print lamineret papir med alle koder og ids og users og...
+
+
+REFS
+Object: https://openaws.appspot.com/entities/128941
+Address: https://openaws.appspot.com/entities/3135
+
+
+OPSAMLING
+Hvilke samlinger er i systemet? Hvilke er beskrevet ordentligt - udbedr mangler? Er der nogle, som skal fjernes?
+Aarhus Filmværksted, lokalhistorisk samling
+Vandmærker på Teatrets billeder
+
+
+BUGS
+Når man klikker next en gang eller flere, og derefter ændrer antallet til noget andet end 20, så starter man ikke ved 0-antallet,men der hvor man kom til.
+collection=95
+https://www.aarhusarkivet.dk/search?--series=Ormslev-Kolt+Kommune%2FSogner%C3%A5det%2FB%C3%B8rnev%C3%A6rnsudvalget
+matrikelnumre ved adresser!
+History-back virker uhensigtsmæssigt i Firefox
+- https://coderwall.com/p/3t6ila/disable-the-back-forward-cache-of-firefox-and-safari
+- https://madhatted.com/2013/6/16/you-do-not-understand-browser-history
+
+https://www.aarhusarkivet.dk/search?collection=5&series=Regnskab&collection=000000004
+
+
+SE NÆRMERE PÅ
+https://www.aarhusarkivet.dk/records/000182846
+
+
+DELETES
+https://www.aarhusarkivet.dk/records/000172081
+https://www.aarhusarkivet.dk/collections/95
+https://www.aarhusarkivet.dk/locations/108678
+
+
+GENERELT
+Biblioteket
+TYDELIG MENUSTRUKTUR i serie- og samlingstagsvisninger
+brug arrow til dateringer
+Kommuneatlas-referencen skal have datering på!
+Alle eksterne billeder skal importeret til arkivet som arkivalier med copyright, vandmærke m.m. PP er fotograf på kommuneatlas
+Feedback-mulighed
+
+
+SØGNING / SØGERESULTAT-SIDE
+
+
+POSTVISNING - RECORDS
+
+
+POSTVISNING - ENTITIES
+Man kunne også have en fast tekst tilknyttet adresser, der oplyser om muligheden for opslag i Preben Rasmussens Samling og Byggesagsregistret.
+
+
+BRUGERE
+Delete User
+Update username
+Brugere bliver ikke gjort opmærksom på, at der bliver sendt en verificationsmail efter oprettelse
+DNS
+Gem seneste login-ts i brugermodellen
+
+Til BESLUTNING I PLENUM
+Er usability brugbart? Og hvordan skelner man mellem VISTA-aftale, som har samme værdier i cp-status og law-status og aftalestatus som Filmværkstedet?
+Forkert (skal diskuteres) sortering ved kun seneste dato (/search?sort=date_from&direction=asc&view=gallery&size=50&date_to=20001231)
+
+
+LATER
+endpoint til serier skal laves /collections/{id}/series
+Større afstand mellem linierne i serie-oplistninger m.m.
+markup-mulighed i de lange beskrivelsesfelter
+Kortviser - nu vises et billede af et kortudsnit, men skal der vises et reelt kort, når man trykker på billedet (data-action=zoom)
+Wiki skal integreres med person-entiteter (lightgallery iframe!)
+søgefeltet skal være i focus, når man åbner søgemenuen og ikke har en touchskærm
+Tilføj toc til bl.a. mine bestillinger, min profil m.m. Der kan nemlig også stå noget om, hvordan bestilling foregår, hvordan man kan opdatere sit nickname m.m.
+Flyt desc_note til ny description-nøgle!!!
+Vejvisere - samlet pdf, metadatamodel med representations- og resources-object, info fra RA, thumb og portrait
+Sognerådsprotokoller - samlet pdf, metadatamodel med representations- og resources-object, info fra RA, thumb og portrait PLUS skær forsiden til og send vejledning til partnere.
+Integrer datasæt på github
+Deploy lokalområder og Sogne, hvis de ikke er der i forvejen!
+Aarhus Filmværksted - afklar mangler, importér, upload
+Alt familysearch skal uploades
+Alt David skal uploades
+API - Lav en side med beskrivelse! (https://libraryofcongress.github.io/data-exploration/index.html)
+Skattemandtal: Alle gadenavne mangler i registreringen!
+Tilføj serier til autosuggest? - dynamisk!
+Actions (print, json) og sharing skal også være synlige på mobil -> eller skal de?
+Kortsamling (eller rettere kortene skal deployes)
+Fjern samlinger fra arkivet - men erstat af hvad (reg_id, giver, indkomst?)
+skal der være links til rest-søgninger? (man har en entitet som filter, og kan nu fritekstsøge efter display_label_tokens, minus årstal)
+next og previous-links skal vises ved postvisning (sammen med 'tilbage til søgning')
+content-types skal vise alle hovedtyper for at undgå forvirring
+kurven skal visualt forbedres og have hjælpetekster, der anleder til oprettelse af brugere
+social-links på resource-pages skal ikke floate til højre på mobiler

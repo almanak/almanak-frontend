@@ -1,0 +1,192 @@
+{% extends '_base.html' %}
+
+{% set title = "Brugerprofil" %}
+
+{% block content %}
+    <div class="media-object app-page-container">
+        <div class="media-object-section show-for-large app-page-menu">
+            <ul class="menu vertical">
+            {% if subpage == 'profile' %}
+                <li class="menu-text">
+                    <span class="fas fa-fw fa-user"></span>
+                    <span>Min profil</span>                    
+                </li>                    
+            {% else %}
+                <li>
+                    <a href="/users/me/profile">
+                        <span class="fas fa-fw fa-user"></span>
+                        <span>Min profil</span>  
+                    </a>
+                </li>
+            {% endif %}
+
+            {% if subpage == 'cart' %}
+                <li class="menu-text">
+                    <span class="fas fa-fw fa-shopping-basket"></span>
+                    <span>Aktuelle kurv</span>                    
+                </li>                    
+            {% else %}
+                <li>
+                    <a href="/users/me/cart">
+                        <span class="fas fa-fw fa-shopping-basket"></span>
+                        <span>Aktuelle kurv</span>  
+                    </a>
+                </li>
+            {% endif %}
+
+            {% if subpage == 'orders' %}
+                <li class="menu-text">
+                    <span class="far fa-fw fa-check-square"></span>
+                    <span>Mine bestillinger</span>                    
+                </li>                    
+            {% else %}
+                <li>
+                    <a href="/users/me/orders">
+                        <span class="far fa-fw fa-check-square"></span>
+                        <span>Mine bestillinger</span>  
+                    </a>
+                </li>
+            {% endif %}
+
+            {% if subpage == 'bookmarks' %}
+                <li class="menu-text">
+                    <span class="far fa-fw fa-bookmark"></span>
+                    <span>Mine bogmærker</span>                    
+                </li>                    
+            {% else %}
+                <li>
+                    <a href="/users/me/bookmarks">
+                        <span class="far fa-fw fa-bookmark"></span>
+                        <span>Mine bogmærker</span>  
+                    </a>
+                </li>
+            {% endif %}
+
+            {% if subpage == 'searches' %}
+                <li class="menu-text">
+                    <span class="fas fa-fw fa-search"></span>
+                    <span>Mine søgninger</span>                    
+                </li>
+            {% else %}
+                <li>
+                    <a href="/users/me/searches">
+                        <span class="fas fa-fw fa-search"></span>
+                        <span>Mine søgninger</span>  
+                    </a>
+                </li>
+            {% endif %}
+            </ul>
+        </div>
+
+        <!-- <div class="media-object-section main-section profile-section"> -->
+        <div class="media-object-section main-section">
+            {% if subpage == 'profile' %}
+                <h4>Profil</h4>
+                    <div class="media-object stack-for-small">
+                        <div class="media-object-section app_keylabel">Brugernavn</div>
+                        <div class="media-object-section main-section">{{session['profile'].get('name')}}</div>
+                    </div>
+                    <div class="media-object stack-for-small">
+                        <div class="media-object-section app_keylabel">Email</div>
+                        <div class="media-object-section main-section">{{session['profile'].get('email')}}</div>
+                    </div>
+
+                    {% if session.get('is_employee') %}
+                        <div class="media-object stack-for-small">
+                            <div class="media-object-section app_keylabel">Roller</div>
+                            <div class="media-object-section main-section">{{ ', '.join(session['profile'].get('roles')) }}</div>
+                        </div>
+                    {% endif %}
+
+            {% elif subpage == 'orders' %}
+                <h4>Aktive bestillinger</h4>
+                {% if orders and session.get('is_employee') %}
+                    <div class="grid-x"> 
+                    {% for order in orders %}
+                        {% set record = order.get('resource') %}
+                        <div class="cell listitem" data-resource-id="{{record.id}}">
+                            {% include 'components/listitem_fullview.html' %}
+                            {% include 'components/actionbar_order.html' %}
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <div>
+                        <strong>Ingen aktive bestillinger</strong>
+                        <p>Aktuelt er det ikke muligt at foretage og administrere bestillinger direkte på AarhusArkivet. Vi forventer at implementere denne funktionalitet i løbet af maj måned, men indtil da er proceduren som følger:</p>
+                        <ol class="">
+                            <li>Find det materiale, du gerne vil bestille hjem til læsesalen.</li>
+                            <li>Find materialets arkiv-ID. Det står altid i starten af en materiale-visning sammen med information om materialetype, arkivskaber med mere.</li>
+                            <li>Send en mail til stadsarkiv@aarhus.dk, hvori du skriver hvilket arkiv-ID, du ønsker at bestille.</li>
+                            <li>Du vil modtage en mail fra os, når materialet er klar på læsesalen.</li>
+                        </ol>
+                    </div>
+                {% endif %}
+
+            {% elif subpage == 'searches' %}
+                <h4>Gemte søgninger</h4>
+                {% if searches %}
+                    <div class="grid-x"> 
+                    {% for search in searches %}
+                        <div class="cell listitem" data-created="{{search.created}}">
+                            {% include 'components/listitem_search.html' %}
+                            {% include 'components/actionbar_search.html' %}
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <div>
+                        <strong>Ingen gemte søgninger</strong>
+                        <p>Du har mulighed for at gemme hver enkelt side med søgeresultater. Klik på 'Gem'-ikonet ( <span class="fas fa-save"></span> ) øverst til højre på siden for at gemme søgningen til senere brug.</p>
+                        <p>Der er mulighed for at give hver søgning en beskrivende overskrift inden den gemmes. Brug denne funktion, da en søge-url er meget svær at læse!</p>
+                    </div>
+                {% endif %}
+
+            {% elif subpage == 'bookmarks' %}
+                <h4>Mine bogmærker</h4>
+                {% if bookmarks %}
+                    <div class="grid-x"> 
+                    {% for record in bookmarks %}
+                        <div class="cell listitem" data-resource-id="{{record.id}}">
+                            {% include 'components/listitem_fullview.html' %}
+                            {% include 'components/actionbar_bookmark.html' %}
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <strong>Ingen bogmærker</strong>
+                    <p>Det er muligt at bogmærke ethvert materiale, som du måtte finde frem til. Klik på 'Bogmærk'-knappen ( <button class="button tiny"><span class="far fa-bookmark icon-left"></span><span>Bogmærk</span></button> ), som du finder i øverste del af materialebeskrivelsen.</p>
+                {% endif %}
+
+            {% elif subpage == 'cart' %}
+                <h4>Kurven</h4>
+                {% if cart %}
+                    <div class="grid-x"> 
+                    {% for record in cart %}
+                        <div class="cell listitem" data-resource-id="{{record.id}}">
+                            {% include 'components/listitem_fullview.html' %}
+                            {% include 'components/actionbar_cartitem.html' %}
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <p><strong>Kurven er tom</strong></p><p>Kurven fungerer som en midlertidig huskeliste, hvor til man kan tilføje eller fjerne materialer mens man browser.</p>
+                    <p>Husk at bogmærke materialer, hvis de skal gemmes til næste besøg. Dette kan også gøres fra kurven.</p>
+                {% endif %}
+
+            {% elif subpage == 'session' %}
+                <h4>Session</h4>
+                <div class="">
+                    <dl>
+                    {% for k, v in session.items() %}
+                        <dt>{{k}}</dt>
+                        <dd>{{v}}</dd>
+                    {% endfor %}
+                    </dl>
+                </div>
+
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock content %}

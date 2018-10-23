@@ -1,0 +1,4 @@
+{# Record-actions #}
+{% if r.representations and r.usability.get('id') in [1, 2, 3] and r.contractual_status.get('id') > 3 and r.representations.record_type != 'video' %}
+    <li><a href="#downloads">Download<span class="fas fa-download icon-right"></span></a></li>
+{% endif %}

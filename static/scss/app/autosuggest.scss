@@ -1,0 +1,70 @@
+.twitter-typeahead {
+    width: 100%;
+    display: block !important;
+}
+
+// autosuggest
+.tt-menu {
+    background-color: #FFFFFF;
+    // box-shadow: 0 5px 5px 0 hsla(0, 0%, 0%, 0.15);
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    margin: 6px -3.6rem 6px 0;
+    padding: 0;
+    right: 0;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    max-height: 70vh;
+    overflow-y: auto;
+    .auto-pending,
+    .auto-header,
+    .auto-not-found,
+    .auto-footer {
+        background-color: rgba(get-color(primary), .1);
+        color: rgba($black, .9);
+        padding: .5rem;
+        font-size: 85%;
+    }
+    .auto-header {
+        border-bottom: 2px solid rgba($black, .3);
+    }
+    .auto-footer {
+        border-top: 2px solid rgba($black, .3);
+    }
+}
+// No close-button on either homepage or large searchpage
+// Therefore less negative margin
+.homepage .tt-menu {
+    margin-right: -2.1rem;
+}
+
+.searchpage .tt-menu {
+    @include breakpoint(large) {
+        margin-right: -2.1rem;
+    }
+}
+
+.searchpage .zero-hits .tt-menu {
+    margin-right: -2.1rem;
+}
+
+.tt-suggestion {
+    font-size: 85%;
+    color: $black;
+    opacity: .9;
+    margin: 0;
+    padding: .3em;
+    border-bottom: 1px solid #eee;
+    &:last-child {
+        border-bottom: none;
+    }
+    &:hover {
+        cursor: pointer;
+        background-color: darken(white, 5%);
+    }
+    .auto-sub-display {
+        font-size: 95%;
+    }
+}
+
+.tt-suggestion.tt-cursor {
+    background-color: darken(white, 5%);
+}

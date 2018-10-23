@@ -1,0 +1,96 @@
+<ul class="facets-v2 menu vertical accordion-menu" data-accordion-menu data-submenu-toggle="true" data-multi-open="false">
+    {% for idx in ['availability', 'usability', 'content_types', 'subjects'] %}
+        <li>
+            <a>{{total_facets[idx].get('label')}}</a>
+            <ul class="menu vertical nested">
+            {% for item in total_facets[idx].get('content') recursive %}
+                {% if item.id in active_facets.get(idx) %}
+                    {% set i = active_facets[idx].get(item.id) %}
+
+                    {% if i.get('remove_link') == 'root' %}
+                    <li class="facet-remove">
+                        <a href="/search">
+                            <div class="media-object">
+                                <div class="media-object-section main-section">{{item.label}}</div>
+                                <div class="media-object-section facet-clear"><span class="far fa-times-circle"></span></div>
+                            </div>
+                        </a>
+                    {% elif i.remove_link %}
+                    <li class="facet-remove">
+                        <a href="/search?{{i.remove_link}}">
+                            <div class="media-object">
+                                <div class="media-object-section main-section">{{item.label}}</div>
+                                <div class="media-object-section facet-clear"><span class="far fa-times-circle"></span></div>
+                            </div>
+                        </a>
+
+                    {% elif i.add_link %}
+                        {% if item.children %}
+                        <li class="facet-trigger">
+                            <a href="/search?{{i.add_link}}">
+                                <div class="media-object">
+                                    <div class="media-object-section main-section">{{item.label}}</div>
+                                    <div class="media-object-section"></div>
+                                </div>
+                            </a>
+                            <ul class="menu vertical nested">
+                                {{ loop( item.children ) }}
+                            </ul>
+                        {% else %}
+                        <li>
+                            <a href="/search?{{i.add_link}}">
+                                <div class="media-object">
+                                    <div class="media-object-section main-section">{{item.label}}</div>
+                                    <div class="media-object-section facet-count">({{i.count}})</div>
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+    <li>
+        <a href="#">Datering</a>
+        <ul class="menu vertical nested">
+            <li>
+                <form id="date-form" method="get" action="/search" style="padding: .5rem .9rem .5rem .5rem;color:#fefefe;">
+                    <div class="grid-x">
+                        <label for="year_from" class="cell">Tidligste dato</label>
+                        <input class="small-4 cell" type="number" name="year_from" value="{% if date_from %}{{date_from[0:4]}}{% endif %}" placeholder="1600" min="1500" max="2018" aria-describedby="dateFromHelp">
+                        <span class="small-1 cell text-center">-</span>
+                        <input class="auto cell" type="number" name="month_from" value="{% if date_from %}{{date_from[4:6]|int}}{% endif %}" placeholder="01" min="1" max="12">
+                        <span class="small-1 cell text-center">-</span>
+                        <input class="auto cell" type="number" name="day_from" value="{% if date_from %}{{date_from[6:8]|int}}{% endif %}" placeholder="01" min="1" max="31">
+                    </div>
+                    <p class="help-text" id="dateFromHelp">Indtast minimum et fire-cifret årstal</p>
+
+                    <div class="grid-x">
+                        <label for="year_to" class="cell">Seneste dato</label>
+                        <input class="small-4 cell" type="number" name="year_to" value="{% if date_to %}{{date_to[0:4]}}{% endif %}" placeholder="2017" min="1500" max="2018" aria-describedby="dateToHelp">
+                        <span class="small-1 cell text-center">-</span>
+                        <input class="auto cell" type="number" name="month_to" value="{% if date_to %}{{date_to[4:6]|int}}{% endif %}" placeholder="12" min="1" max="12">
+                        <span class="small-1 cell text-center">-</span>
+                        <input class="auto cell" type="number" name="day_to" value="{% if date_to %}{{date_to[6:8]|int}}{% endif %}" placeholder="31" min="1" max="31">
+                    </div>
+                    <p class="help-text" id="dateToHelp">Indtast minimum et fire-cifret årstal</p>
+
+                    {% if params %}
+                        {% for tup in params %}
+                            {% if tup[0] != 'start' %}<input type="hidden" name="{{tup[0]}}" value="{{tup[1]}}">{% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {# TODO: If all date-fields are empty, submit must be disabled #}
+                    {% if not (date_from or date_to) %}
+                        <button class="button expanded secondary" type="submit">Søg</button>
+                    {% else %}
+                        <button class="button expanded secondary" type="submit">Opdatér</button>
+                    {% endif %}
+                </form>
+            </li>
+        </ul>
+    </li>
+</ul>

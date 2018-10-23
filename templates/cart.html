@@ -1,0 +1,19 @@
+{% extends '_base.html' %}
+{% set title = "Huskeliste" %}
+
+
+{% block content %}
+    <h4>Kurven</h4>
+    {% if cart %}
+        <div class="grid-x">
+        {% for record in cart %}
+            <div class="cell listitem" data-resource-id="{{record.id}}">
+            {% include 'components/listitem_fullview.html' %}
+            {% include 'components/actionbar_cartitem.html' %}
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p>Kurven er tom...</p>
+    {% endif %}
+{% endblock content %}

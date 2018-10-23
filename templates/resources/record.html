@@ -1,0 +1,617 @@
+{# View and vars - specific for records #}
+
+{# jinja2 construct to update set variables #}
+{% set vars = { 'storage_id': False, 'subjects': {} } %}
+
+{# static settings #}
+{% set icon = ICONS[r.content_types[0][0].get('id')|string] %}
+{% set copyright_id = r.copyright_status.get('id') %}
+{% set legal_id = r.other_legal_restrictions.get('id') %}
+{% set contractual_id = r.contractual_status.get('id') %}
+{% set availability_id = r.availability.get('id') %}
+{% set usability_id = r.usability.get('id') %}
+{% if r.representations %}
+    {% set record_type = r.representations.get('record_type') %}
+{% endif %}
+
+{% for _dict in r.get('resources', []) %}
+    {% if _dict.get('storage_id') %}
+        {% if vars.update({'storage_id': _dict['storage_id'][0]}) %}{% endif %}
+    {% elif _dict.get('barcode') %}
+        {% if vars.update({'storage_id': _dict['barcode']}) %}{% endif %}
+    {% endif %}
+{% endfor %}
+
+{# Image and core-data container #}
+<div class="record-container" id="resource-container">
+    <div class="grid-x grid-padding-x">
+        <div class="cell {{breakpoints_image}} resource-representation text-center">
+            {% if r.portrait and legal_id == 1 and contractual_id > 2 %}
+                {% if availability_id == 4 or readingroom or session.get('is_employee') %}
+                    {% if r.representations and record_type == 'video' %}
+                        <div id="single-video" style="position: relative;">
+                            <a href="https://vimeo.com/{{r.representations.get('vimeo_id')}}">
+                                <img class="resource-portrait" src="{{r.portrait}}"/>
+                                <div class="play-icon">
+                                    <span class="far fa-play-circle fa-2x"></span>
+                                </div>
+                            </a>
+                        </div>
+                    {% elif r.representations and record_type == 'image' %}
+                        <div id="single-image" style="position: relative;">
+                            <a href="{{r.representations.get('large_image')}}">
+                                <img class="resource-portrait" src="{{r.portrait}}"/>
+                                <div class="play-icon">
+                                    <span class="fas fa-search-plus fa-2x"></span>
+                                </div>
+                            </a>
+                        </div>
+                    {% elif r.representations and record_type == 'web_document' %}
+                        <div id="single-document" style="position: relative;">
+                            <a href="{{r.representations.get('web_document_url')}}">
+                                <img class="resource-portrait" src="{{r.portrait}}"/>
+                                <div class="play-icon">
+                                    <span class="far fa-file-pdf fa-3x"></span>
+                                </div>
+                            </a>
+                        </div>
+                        <span style="display:inline-block;padding-top:15px;font-size:90%;color:#111;">Klik på billedet for at hente pdf-dokumentet.</span>
+                    {% endif %}
+                {% else %}
+                    <div class="align-center" style="display:flex;padding-top:1rem;">
+                        <i class="fas fa-lock fa-9x" style="opacity:.7;"></i>
+                    </div>
+                    <span style="display:inline-block;padding-top:15px;font-size:90%;color:#111;">Materialet kan ses på læsesalen.</span>
+                {% endif %}
+            {% else %}
+                <i class="resource-icon {{icon.get('icon')}} fa-9x"></i>
+            {% endif %}
+        </div>
+
+        <div id="core" class="cell {{breakpoints_core}} resource-core">
+            {# Enable social media links if copyright permits #}
+            {% if label or usability_id in [1,2] %}
+                <div class="media-object">
+                    {% if label %}
+                        <p class="media-object-section main-section resource-title">{{label|truncate(250)}}</p>
+                    {% endif %}
+
+                    {% if usability_id in [1,2] %}
+                        <ul class="media-object-section menu align-right">
+                            <li>
+                                <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank" title="Del på Facebook" style="padding: 0.1rem .8rem .5rem;">
+                                    <span class="fab fa-facebook fa-2x"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://twitter.com/intent/tweet?text=&via=wdweekly" target="_blank" title="Del på Twitter" style="padding: 0.1rem .8rem .5rem;">
+                                    <span class="fab fa-twitter fa-2x"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    {% endif %}                    
+                </div>
+            {% endif %}
+
+            {% if r.collectors %}
+                <div class="media-object">
+                    <div class="media-object-section app_keylabel">Arkivskaber</div>
+                    <div class="media-object-section main-section">
+                        {% for item in r.collectors %}
+                            <div>
+                                <a class="collector-link" href="/search?{{item.new_link}}">{{item.label}}</a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="media-object">
+                <div class="media-object-section app_keylabel">Materialetype</div>
+                <div class="media-object-section main-section">
+                    {% for hierarchy in r.content_types %}
+                        {% for item in hierarchy %}
+                            <div>
+                                <a class="resource-link" href="/search?{{item.new_link}}" style="margin-left:{{loop.index0 * 6}}px;">
+                                    {% if not loop.first %}
+                                        <span class="fas fa-arrow-right fa-sm"></span>
+                                    {% endif %}
+                                    {{item.label}}
+                                </a>
+                            </div>                            
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% if r.creators %}
+                <div class="media-object">
+                    <div class="media-object-section app_keylabel">Kreativt ophav</div>
+                    <div class="media-object-section main-section">
+                        {% for item in r.creators %}
+                            <div><a class="resource-link" href="/search?{{item.new_link}}">{{item.label}}</a></div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="media-object">
+                <div class="media-object-section app_keylabel">Datering</div>
+                <div class="media-object-section main-section">
+                {% if r.date_from %}
+                    {% if r.date_to %}
+                        {% if r.date_to == r.date_from %}
+                            <span>{{r.date_from}}</span>
+                        {% elif r.date_from[0:7] == r.date_to[0:7] %}
+                            <span>{{r.date_from[0:7]}}</span>
+                        {% elif r.date_from[0:4] == r.date_to[0:4] and (r.date_from[5:10] == '01-01') %}
+                            <span>{{r.date_from[0:4]}}</span>
+                        {% elif r.date_from[5:10] == '01-01' and (r.date_to[5:10] == '12-31') %}
+                            <span>{{r.date_from[0:4]}} ~ {{r.date_to[0:4]}}</span>
+                        {% else %}
+                            <span>{{r.date_from}} ~ {{r.date_to}}</span>
+                        {% endif %}
+                    {% else %}
+                        <span>{{r.date_from}} ~</span>
+                    {% endif %}
+                {% elif r.date_to %}
+                    <span>~ {{r.date_to}}</span>
+                {% else %}
+                    <span>Udateret</span>
+                {% endif %}
+                </div>
+            </div>
+
+            <div class="media-object">
+                <div class="media-object-section app_keylabel">Kurator</div>
+                <div class="media-object-section main-section">
+                    {% for item in r.curators %}
+                        <div><a class="resource-link" href="/search?{{item.new_link}}">{{item.label}}</a></div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div id="archival_id" class="media-object">
+                <div class="media-object-section app_keylabel">Arkiv ID</div>
+                <div class="media-object-section main-section">{{r.id}}</div>
+            </div>
+
+            {% if r.collection and r.collection.get('id') == 48 %}
+                {% include 'resources/record_extension--byraadsarkivet.html' %}
+            {% endif %}
+
+            {% include 'components/actionbar_record.html' %}
+        </div>
+    </div>
+
+    {# Description #}
+    <h5 id="description">Beskrivelse</h5>
+    {% if r.title %}
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Titel</div>
+            <div class="media-object-section main-section">{{r.title}}</div>
+        </div>
+    {% endif %}
+
+    {% if r.heading %}
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Overskrift</div>
+            <div class="media-object-section main-section">{{r.heading}}</div>
+        </div>
+    {% endif %}
+
+    {% if r.summary %}
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Abstrakt</div>
+            <div class="media-object-section main-section">{{r.summary}}</div>
+        </div>
+    {% endif %}
+
+    {% if r.description %}
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Beskrivelse</div>
+            <div class="media-object-section main-section">{{r.description}}</div>
+        </div>
+    {% endif %}
+
+    {% if r.desc_notes %}
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Deskriptiv note</div>
+            <div class="media-object-section main-section">{{r.desc_notes}}</div>
+        </div>
+    {% endif %}
+
+    {% if r.collection %}
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Samling</div>
+            <div class="media-object-section main-section">
+                <a class="resource-link" href="/search?{{r.collection.get('new_link')}}">{{r.collection.get('label')}}</a>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if r.series %}
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Serie</div>
+            <div class="media-object-section main-section">
+            {% for item in r.series %}
+                <div>
+                    <a class="resource-link" href="/search?{{item.new_link}}" style="margin-left:{{loop.index0 * 6}}px;">
+                    {% if not loop.first %}
+                        <span class="fas fa-arrow-right fa-sm"></span>
+                    {% endif %}
+                        {{item.label}}
+                    </a>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if r.collection_tags and r.collection %}
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Samlingstags</div>
+            <div class="media-object-section main-section">
+            {% for item in r.collection_tags recursive %}
+                {% set child = item.path|length > item.label|length %}
+                <div>
+                    <a class="resource-link" href="/search?{{r.collection.get('new_link')}}&collection_tags={{item.path|urlencode}}">
+                        {% if child %}<span class="fas fa-arrow-right fa-sm"></span>{% endif %}
+                        {{item.label}}
+                    </a>
+                    {% if item.children %}
+                        <div style="margin-left:.5rem;">
+                            {{ loop( item.children ) }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if r.subjects_v2 %}
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Emner</div>
+            <div class="media-object-section main-section">
+            {% for hierarchy in r.subjects %}
+                {% for item in hierarchy %}
+                    {% if vars.subjects.get() %}
+                        {% if vars.update({'storage_id': _dict['storage_id'][0]}) %}{% endif %}
+                    {% endif %}
+                    <div>
+                        <a class="resource-link" href="/search?{{item.new_link}}"  style="margin-left:{{loop.index0 * 6}}px;">
+                        {% if not loop.first %}
+                            <span class="fas fa-arrow-right fa-sm"></span>
+                        {% endif %}
+                            {{item.label}}
+                        </a>
+                    </div>                            
+                {% endfor %}
+            {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if r.subjects %}
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Emner</div>
+            <div class="media-object-section main-section">
+            {% for hierarchy in r.subjects %}
+                {% for item in hierarchy %}
+                    <div>
+                        <a class="resource-link" href="/search?{{item.new_link}}"  style="margin-left:{{loop.index0 * 6}}px;">
+                        {% if not loop.first %}
+                            <span class="fas fa-arrow-right fa-sm"></span>
+                        {% endif %}
+                            {{item.label}}
+                        </a>
+                    </div>                            
+                {% endfor %}
+            {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {# Descriptive data #}
+    {% if r.desc_data %}
+        <h5 id="description">Beskrivelsesdata</h5>
+        {% for k, v in r.desc_data.items() %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">{{k}}</div>
+                <div class="media-object-section main-section">{{v}}</div>
+            </div>
+        {% endfor %}
+    {% endif %}
+ 
+
+    {# Relations #}
+    {% if r.locations or r.people or r.events or r.organisations or r.objects %}
+        <h5 id="relations">Relationer</h5>
+    {% endif %}
+
+    {% if r.locations %}
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Steder</div>
+            <div class="media-object-section main-section">
+                {% for item in r.locations %}
+                    <div><a class="resource-link" href="/search?{{item.new_link}}">{{item.label}}</a></div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if r.people %}
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Personer</div>
+            <div class="media-object-section main-section">
+                {% for item in r.people %}
+                    <div><a class="resource-link" href="/search?{{item.new_link}}">{{item.label}}</a></div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if r.organisations %}
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Organisationer</div>
+            <div class="media-object-section main-section">
+                {% for item in r.organisations %}
+                    <div><a class="resource-link" href="/search?{{item.new_link}}">{{item.label}}</a></div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if r.events %}
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Begivenheder</div>
+            <div class="media-object-section main-section">
+                {% for item in r.events %}
+                    <div><a class="resource-link" href="/search?{{item.new_link}}">{{item.label}}</a></div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if r.objects %}
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Objekter</div>
+            <div class="media-object-section main-section">
+                {% for item in r.objects %}
+                    <div><a class="resource-link" href="/search?{{item.new_link}}">{{item.label}}</a></div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <h5 id="copyright">Ophavsret</h5>
+    <div class="media-object stack-for-small">
+        <div class="media-object-section app_keylabel">Ophavsret</div>
+        <div class="media-object-section main-section">{{r.copyright_status.get('label')}}</div>
+    </div>
+    <div>
+        {% if r.copyright_id == 1 %}
+            <span>Indholdet har ikke værkshøjde og er derfor ikke beskyttet af ophavsret.</span>
+        {% elif r.copyright_id == 2 %}
+            <span>Det ophavsretsbeskyttede materiale er i offentlig eje, da ophavsretten er udløbet.</span>
+        {% elif r.copyright_id == 3 %}
+            <span>Det ophavsretsbeskyttede materiale er frigivet af alle ophavsretsholdere til offentlig eje.</span>
+        {% elif r.copyright_id == 4 %}
+            <span>Materialet er under ophavsret, men udgives efter aftale under en <a href="https://creativecommons.org/licenses/by/4.0/deed.da">Creative Commons Navngivelse licens</a>.</span>
+        {% elif r.copyright_id == 5 %}
+            <span>Materialet er under ophavsret, men udgives efter aftale under en <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.da">Creative Commons Navngivelse Ikke-Kommerciel licens</a>.</span>
+        {% elif r.copyright_id == 6 %}
+            <span>Ophavsretsaftalen kræver alle rettigheder forbeholdt.</span>
+        {% elif r.copyright_id == 7 %}
+            <span>En eller flere nødvendige ophavsretsaftaler mangler, ofte på grund af ukendte skabere eller rettighedshavere.
+            <span>Du opfordres hermed til at dele oplysninger, som kan bruges til at identificere en hidtil ukendt ophavsmand/-kvinde.</span>
+        {% elif r.copyright_id == 8 %}
+            <span>Vi har endnu ikke undersøgt materialets ophavsretslige forhold.</span>
+            <span>Du opfordres hermed til at dele oplysninger, som kan bruges til at identificere en hidtil ukendt ophavsmand/-kvinde.</span>
+        {% elif r.copyright_id == 9 %}
+            <span>Materialets ophavsretslige status er undersøgt, men stadig uafklaret.</span>
+            <span>Du opfordres hermed til at dele oplysninger, som kan bruges til at identificere en hidtil ukendt ophavsmand/-kvinde.</span>
+        {% endif %}
+    </div>
+
+    <h5 id="judicial_status">Anden juridisk beskyttelse</h5>
+    <div class="media-object stack-for-small">
+        <div class="media-object-section app_keylabel">Aftaleforhold</div>
+        {% if contractual_id == 1 %}
+            <div class="media-object-section main-section">
+                <span>Materialet er utilgængeligt. Ifølge aftale.</span>
+            </div>
+        {% elif contractual_id == 2 %}
+            <div class="media-object-section main-section">
+                <span>Materialet er kun tilgængeligt gennem ansøgning. Ifølge aftale.</span>
+            </div>
+        {% elif contractual_id == 3 %}
+            <div class="media-object-section main-section">
+                <span>Materialet må kun ses på læsesalen. Ifølge aftale.</span>
+            </div>
+        {% elif contractual_id == 4 %}
+            <div class="media-object-section main-section">
+                <span>Materialet må offentliggøres på internettet. Ifølge aftale.</span>
+            </div>
+        {% else %}
+            <div class="media-object-section main-section">
+                <span>Materialet er ikke begrænset af kontraktuelle klausuler.</span>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="media-object stack-for-small">
+        <div class="media-object-section app_keylabel">Lovgivning</div>
+        {% if legal_id == 1 %}
+            <div class="media-object-section main-section">
+                <span>Materialet er ikke underlagt andre juridiske begrænsninger af tilgængeligheden.</span>
+            </div>
+        {% elif legal_id == 2 %}
+            <div class="media-object-section main-section">
+                <span>Materialet er utilgængeligt ifølge persondatalovgivningen.</span>
+            </div>
+        {% elif legal_id == 3 %}
+            <div class="media-object-section main-section">
+                <span>Materialet er utilgængeligt ifølge arkivlovgivningen.</span>
+            </div>
+        {% elif legal_id == 4 %}
+            <div class="media-object-section main-section">
+                <span>Materialet er utilgængeligt som følge af særlige juridiske forhold.</span>
+            </div>
+        {% endif %}
+    </div>
+
+    <h5 id="availability">Tilgængelighed</h5>
+    <div class="media-object stack-for-small">
+        <div class="media-object-section app_keylabel">Tilgængelighed</div>
+        {% if legal_id > 1 or contractual_id == 1 %}
+            <div class="media-object-section main-section">
+                <span>Materialet er utilgængeligt som følge af nævnte juridiske forhold.</span>
+            </div>        
+        {% elif contractual_id == 2 %}
+            <div class="media-object-section main-section">
+                <span>Materialet er kun tilgængeligt gennem ansøgning.</span>
+            </div>
+        {% elif availability_id == 2 %}
+            <div class="media-object-section main-section">
+                <span>Materialet skal bestilles hjem til læsesalen, før det kan beses.</span>
+            </div>
+        {% elif availability_id == 3 %}
+            <div class="media-object-section main-section">
+                <span>Materialet er tilgængeligt på læsesalen. Der kræves ikke forudgående bestilling for at se materialer på læsesalen. Man skal blot møde op i åbningstiderne.</span>
+            </div>
+        {% else %}
+            <div class="media-object-section main-section">
+                <span>Materialet er online her på Aarhusarkivet.dk, men det er det enkelte materiales ophavsretslige status, der fastsætter, hvad et givent materiale videre må bruges til.</span>
+            </div>
+        {% endif %}
+    </div>
+
+    {# Bestilling #}
+    {% if availability_id == 2 and legal_id == 1 and contractual_id > 2 %}
+        <h5 id="ordering">Bestilling</h5>
+        <div class="">
+            <p>Du kan bestille materialet ved at sende en mail til stadsarkiv@aarhus.dk, hvori du angiver materialets arkiv-ID, som kan ses <a href="#core">øverst på siden</a></p>
+            {% for e in r.curators %}
+                {% if e.get('id') == 2 %}
+                    <p>Hvis materialet ligger hos Rigsarkivet, skal bestillingen sendes dertil. Gå ind på <a href="https://www.sa.dk/find/">Rigsarkivets hjemmeside</a> og find materialet der. Efterfølgende kan det så bestilles hjem til en af deres læsesale.</p>
+                {% elif e.get ('id') == 4 %}
+                    <p>Materialet kan ses på Aarhus Teaters Arkiv.</p>    
+                {% endif %}
+            {% endfor %}
+        </div>        
+    {% endif %}
+
+    {# Administration #}
+    {% if session.get('profile') and 'employee' in session['profile'].get('roles', []) %}
+        <h5 id="administration">Administration</h5>
+        {% if r.admin_notes %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Admin. note</div>
+                <div class="media-object-section main-section">{{r.admin_notes}}</div>
+            </div>
+        {% endif %}
+
+        {% if r.admin_data %}
+            {% for key, value in r.admin_data.items() %}
+                <div class="media-object stack-for-small">
+                    <div class="media-object-section app_keylabel">{{key}}</div>
+                    <div class="media-object-section main-section">{{value}}</div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if r.registration_id %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Reg_id</div>
+                <div class="media-object-section main-section">{{r.registration_id}}</div>
+            </div>
+        {% endif %}
+
+        {% if r.created_by %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Oprettet af</div>
+                <div class="media-object-section main-section">{{r.created_by}}</div>
+            </div>
+        {% endif %}
+
+        {% if r.created %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Oprettet</div>
+                <div class="media-object-section main-section">{{r.created}}</div>
+            </div>
+        {% endif %}
+
+        {% if r.last_updated_by %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Opdateret af</div>
+                <div class="media-object-section main-section">{{r.last_updated_by}}</div>
+            </div>
+        {% endif %}
+
+        {% if r.last_updated %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Opdateret</div>
+                <div class="media-object-section main-section">{{r.last_updated}}</div>
+            </div>
+        {% endif %}
+
+        {% if r.resources %}
+            <h5>Ressourcer</h5>
+
+                <!-- <div class="media-object-section app_keylabel">Placering</div>
+                <div class="media-object-section main-section">
+                    {% for res in r.resources %}
+                        {% if res.get('storage_id') %}
+                            <p class="app_keylabel">EnhedsID</p><p>{{res['storage_id'][0]}}</p>
+                        {% elif res.get('barcode') %}
+                            <p class="app_keylabel">Stregkode</p><p>{{res['barcode']}}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div> -->
+
+            {% for res in r.resources %}
+                <div class="media-object stack-for-small">
+                    {% if res.get('type') == 'analog' %}
+                        <div class="media-object-section app_keylabel">Analog</div>
+                    {% else %}
+                        <div class="media-object-section app_keylabel">Digital</div>
+                    {% endif %}
+                    <div class="media-object-section main-section">
+                        {% for k, v in res.items() %}
+                            {% if k != 'type' %}
+                                <dl>
+                                    <dt>{{k}}: </dt>
+                                    <dd>{{v}}</dd>
+                                </dl>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+
+    {% if r.representations and legal_id == 1 and contractual_id > 3 and usability_id in [1,2,3] and record_type != 'video' %}
+        <h5 id="downloads">Download</h5>
+        <div class="media-object stack-for-small">
+            {% if record_type == 'image' %}
+                <div class="media-object-section app_keylabel">Størrelser</div>
+                <div class="media-object-section main-section">
+                    <div>
+                        <a href="{{r.representations.get('large_image')}}" download>Download fuld størrelse</a>
+                    </div>
+                    <div>
+                        <a href="{{r.portrait}}" download>Download mellem størrelse</a>
+                    </div>
+                </div>
+            {% elif record_type == 'web_document' %}
+                <div class="media-object-section app_keylabel">PDF-fil</div>
+                <div class="media-object-section main-section">
+                    <a href="{{r.representations.get('web_document_url')}}" download>Klik her for at downloade</a>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

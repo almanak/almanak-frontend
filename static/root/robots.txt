@@ -1,0 +1,14 @@
+# www.robotstxt.org/
+
+User-agent: *
+Disallow: /search_v2
+Disallow: /test
+Disallow: /availability
+Disallow: /usability
+Disallow: /content_types
+Disallow: /subjects
+Disallow: /callback
+Disallow: /logout
+Disallow: /users/
+Disallow: /cart
+Disallow: /autosuggest

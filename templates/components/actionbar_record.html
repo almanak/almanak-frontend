@@ -1,0 +1,31 @@
+<div class="actionbar_record hide-for-print">
+    <!-- cart-handlers -->
+    <button data-resource-id="{{r.id}}" class="button small cart-handler {% if r.id in session.get('cart', []) %}hide{% endif %}" data-action="add-to-cart">
+        <span class="fas fa-shopping-cart icon-left"></span><span>Føj til kurv</span>
+    </button>
+    <button data-resource-id="{{r.id}}" class="button small secondary cart-handler {% if r.id not in session.get('cart', []) %}hide{% endif %}" data-action="remove-from-cart">
+        <span class="fas fa-times icon-left"></span><span>Fjern fra kurv</span>
+    </button>
+    {% if session.get('profile') %}
+        <!-- bookmark-handlers -->
+        <button data-resource-id="{{r.id}}" class="button small bookmark-handler {% if r.id in session.get('bookmarks', []) %}hide{% endif %}" data-action="create-bookmark">
+            <span class="far fa-bookmark icon-left"></span><span>Bogmærk</span>
+        </button>
+        <button data-resource-id="{{r.id}}" class="button small secondary bookmark-handler {% if r.id not in session.get('bookmarks', []) %}hide{% endif %}" data-action="delete-bookmark">
+            <span class="fas fa-times icon-left"></span><span>Fjern bogmærke</span>
+        </button>
+
+        {# Orders not implemented yet
+        <!-- order-handlers -->
+        {% if (r.availability.id == 2) and vars.storage_id %}
+            <button data-resource-id="{{r.id}}" data-storage-id="{{vars.storage_id}}" class="button small order-handler {% if r.id in session.get('orders', []) %}hide{% endif %}" data-action="create-order">
+                <span class="far fa-check-square icon-left"></span><span>Bestil materialet</span>
+            </button>
+             <button data-resource-id="{{r.id}}" class="button small order-handler {% if r.id not in session.get('orders', []) %}hide{% endif %}" data-action="cancel-order">
+                <span class="fas fa-times icon-left"></span><span>Afbryd bestilling</span>
+            </button>
+        {% endif %}
+        #}
+
+    {% endif %}
+</div>

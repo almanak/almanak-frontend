@@ -1,0 +1,150 @@
+{% extends '_base.html' %}
+{% set title = "AarhusArkivet" %}
+
+
+{% block content %}
+<div>
+    <img class="show-for-medium hide-for-large" src="/static/img/topimagelogo_1024.jpg">
+    <img class="show-for-large" src="/static/img/topimagelogo_1920.jpg">
+    <div class="grid-x grid-padding-x align-center align-middle homepage-hero">
+        <div class="cell small-12 medium-8 large-5">
+            {% include 'components/search_form_global.html' %}
+            <a data-toggle="searchbar">Avanceret søgning</a>
+        </div>
+    </div>
+</div>
+
+<div class="grid-x grid-padding-x grid-padding-y homepage-list" style="font-size:90%;padding-top:2em;">
+    <div class="cell smedium-6 large-3">
+        <div class="cart">
+            <a href="/search?direction=desc&sort=created_at">
+                <img data-interchange="[static/img/nyeste-dokument_480px.jpg, small], [static/img/nyeste-dokument_480px.jpg, large]">
+            </a>
+        </div>
+    </div>
+
+    <div class="cell smedium-6 large-3">
+        <div class="cart">
+            <a href="/collections/194">
+                <img data-interchange="[static/img/kommune-arkivet_480px.jpg, small], [static/img/kommune-arkivet_480px.jpg, large]">
+            </a>
+        </div>            
+    </div>
+
+    <div class="cell smedium-6 large-3">
+        <div class="cart">
+            <a href="/search?content_types=61&availability=4&direction=asc&size=50&sort=date_from&view=gallery">
+                <img data-interchange="[static/img/billeder-fra-aarhus_480px.jpg, small], [static/img/billeder-fra-aarhus_480px.jpg, large]">
+            </a>
+        </div>
+    </div>
+
+    <div class="cell smedium-6 large-3">
+        <div class="cart">
+            <a href="/collections/48">
+                <img data-interchange="[static/img/byrådsarkivet_480px.jpg, small], [static/img/byrådsarkivet_480px.jpg, large]">
+            </a>
+        </div>
+    </div>
+
+    <div class="cell smedium-6 large-3">
+        <div class="cart">
+            <a href="https://smartarkivering.dk" target="blank">
+                <img data-interchange="[static/img/smartarkivering_480px.jpg, small], [static/img/smartarkivering_480px.jpg, large]">
+            </a>
+            <div class="" style="padding-top:1em;">
+                <h5 style="font-weight:bold;color:#0a0a0ae6;font-size: 1.1rem;">BIDRAG MED DINE EGNE FILER</h5>
+                <p>Velkommen til Aarhus Stadsarkivs online arkiveringsservice! Her kan du aflevere filer fra dit ”digitale arkiv”. Vi modtager både fra private, foreninger og virksomheder.</p>
+                <p>Som udgangspunkt kan du aflevere alle slags filer, både med hensyn til format og størrelse. Det eneste, vi kræver, er, at du også er villig til at beskrive de filer, du afleverer, samt at du accepterer de brugsvilkår, som vi har valgt at knytte til denne type online aflevering.</p>
+                <p>Bidrag til historien på <a href="https://smartarkivering.dk" target="blank">smartarkivering.dk</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="cell smedium-6 large-3">
+        <div class="cart">
+            <a href="https://smartarkivering.dk" target="blank">
+                <img data-interchange="[static/img/kronprinsen_480px_enhanced.jpg, small], [static/img/kronprinsen_480px_enhanced.jpg, large]">
+            </a>
+            <div class="" style="padding-top:1em;">
+                <h5 style="font-weight:bold;color:#0a0a0ae6;font-size: 1.1rem;">BIDRAG MED DINE EGNE FILER</h5>
+                <p>H.K.H. Kronprins Frederik fylder 50. Den 21. maj bliver han fejret i Aarhus, hvor han løber gennem byen til Royal Run Danmark. Vi samler alle de bedste billeder og videoer med Kronprinsen i Aarhus i en kæmpe fødselsdagshilsen, der bliver vist på storskærm i målområdet. Hvis du vil have dine billeder med i kronprinsens fødselsdagshilsen, kan du dele dem med os her.</p>
+                <p>Husk at beskrive de filer, du afleverer, samt at acceptere de brugsvilkår, som vi har valgt at knytte til denne type online aflevering.</p>
+                <p>Bidrag til kronprinsens fødselsdagshilsen på <a href="https://smartarkivering.dk" target="blank">smartarkivering.dk</a></p>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="cell smedium-6 large-3">
+        <div class="cart">
+            <a href="http://www.2017aarhusianere.dk/" target="blank">
+                <img data-interchange="[static/img/2017-aarhusianere_480px_q35.jpg, small], [static/img/2017-aarhusianere_480px_q35.jpg, large]">
+            </a>
+            <div class="" style="padding-top:1em;">
+                <h5 style="font-weight:bold;color:#0a0a0ae6;font-size: 1.1rem;">FORTÆL DIN EGEN HISTORIE</h5>
+                <p>2017 aarhusianere er et livsfortællingsprojekt, hvor aarhusianeres historie bliver samlet og formidlet på tværs af generationer og oprindelse.</p>
+                <p>Du kan vælge at skrive din egen historie – enten lige fra hjertet eller med udgangspunkt i spørgsmål udviklet til projektet. Eller du kan skrive om andre, f.eks. dine forældre.</p>
+                <p>Læs mere om projektet på <a href="http://www.2017aarhusianere.dk/" target="blank">2017aarhusianere.dk</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="cell smedium-6 large-3">
+        <div class="cart">
+            <a href="http://sallingarkivet.dk" target="blank">
+                <img data-interchange="[static/img/salling-arkivet_480px.jpg, small], [static/img/salling-arkivet_480px.jpg, large]">
+            </a>
+            <div class="" style="padding-top:1em;">
+                <h5 style="font-weight:bold;color:#0a0a0ae6;font-size: 1.1rem;">ET STORMAGASINS HISTORIE</h5>
+                <p>Aarhus Stadsarkiv modtog i juni 2014 arkiver fra F. Salling Stormagasin A/S og Ferdinand og Herman Salling. To år senere modtog Stadsarkivet en samling dokumenter fra Dansk Supermarked mv.</p>
+                <p>På hjemmesiden fortæller vi historien om stormagasinet og de to første indehavere, Ferdinand og Herman Salling, om kunder og personale. Du kan se Salling-dokumenter trukket fra AarhusArkivet.</p>
+                <p>Læs om Sallings historie på <a href="http://sallingarkivet.dk" target="blank">sallingarkivet.dk</a></p>
+            </div>
+        </div>          
+    </div>
+
+    <div class="cell smedium-6 large-3">
+        <div class="cart">
+            <a href="http://aarhuswiki.dk" target="blank">
+                <img data-interchange="[static/img/aarhus-wiki_480px.jpg, small], [static/img/aarhus-wiki_480px.jpg, large]">
+            </a>
+            <div class="" style="padding-top:1em;">
+                <h5 style="font-weight:bold;color:#0a0a0ae6;font-size: 1.1rem;">AARHUSWIKI</h5>
+                <p>AarhusWiki er en wikipedia om Aarhus’. Den indeholder artikler med vægt på historiske beskrivelser eller historiske vinkler på nutidige og aktuelle emner. </p>
+                <p>Emnerne, der behandles, spænder vidt og omfatter alt, der har at gøre med Personer, Natur, Steder, Historiske perioder og temaer, Samfund, Erhverv og Kultur og fritid.</p>
+                <p>Læs mere om byens historie på <a href="http://aarhuswiki.dk" target="blank">aarhuswiki.dk</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="background-color:#ececec;font-size:90%;padding-top:2em;">
+    <div class="grid-x grid-padding-x grid-padding-y homepage-list" style="margin-top:0;">
+        <div class="cell">
+            <h4>Udvalgte samlinger</h4>
+        </div>
+        <div class="cell medium-6">
+            <div class="cart">
+                <a href="/collections/2">
+                    <img data-interchange="[static/img/stiftstidende-samling_480px.jpg, small], [static/img/stiftstidende-samling_700px.jpg, medium]">
+                </a>
+                <div class="" style="padding-top:1em;">
+                    <p>Århus Stiftstidendes fotografer har i årtier været til stede ved små og store begivenheder i Aarhus. Dermed afspejler fotosamlingen byens liv og mennesker fra slutningen af 1930’erne frem til seneste årtusindeskifte. Det er hele byens fotoalbum.</p>
+                    <p>Fotosamlingen er en del af Århus Stiftstidendes overordnede virksomhedsarkiv, der ud over pressefotografier indeholder eksempelvis kasse-, lønnings- annonce og statusbøger samt udklipssamlinger. Den analoge del af samlingen tilhører Rigsarkivet, og det er dermed kun den digitale fotosamling, som her formidles af Aarhus Stadsarkiv.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell medium-6">
+            <div class="cart">
+                <a href="/collections/32">
+                    <img data-interchange="[static/img/musikhuset-samling_480px.jpg, small], [static/img/musikhuset-samling_700px.jpg, medium]">
+                </a>
+                <div class="" style="padding-top:1em;">
+                    <p>Musikhuset Aarhus’ samling dokumenterer i dybden institutionens virke og udvikling fra indvielsen i 1982 til 2012. Fokus er på arrangementsvirksomheden med kataloger og kontrakter, men også væsentlige administrative udviklingstendenser er dokumenteret i materialet.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

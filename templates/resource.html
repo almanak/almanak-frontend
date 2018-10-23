@@ -1,0 +1,130 @@
+{% extends '_base.html' %}
+
+{% set r = resource %}
+
+{% if collection in ['creators', 'collectors'] %}
+    {% set collection = r.get('domain') %}
+{% endif %}
+
+{# Determine title #}
+{% if collection in ['people', 'organisations', 'events', 'locations', 'objects'] %}
+    {% if r.display_label %}
+        {% set title = r.display_label + " | AarhusArkivet" %}
+    {% else %}
+        {% set title = "Ubeskrevet entitet | AarhusArkivet" %}
+    {% endif %}
+{% else %}
+    {% if r.title %}
+        {% set label = r.title %}
+    {% elif r.heading %}
+        {% set label = r.heading %}
+    {% elif r.summary %}
+        {% set label = '[' + r.summary|truncate(200) + ']' %}
+    {% elif r.description %}
+        {% set label = '[' + r.description|truncate(200) + ']' %}
+    {% else %}
+        {% set label = 'Ubeskrevet materiale' %}
+    {% endif %}
+
+    {% if label.endswith('.') %}
+        {% set label = label[:-1] %}
+    {% endif %}
+
+    {% set title = label|truncate(70) %}
+{% endif %}
+
+{# Determine layout #}
+{% if page and page == 'resourcepage' %}
+    {% if r.thumbnail %}
+        {% set breakpoints_image = 'medium-6' %}
+        {% set breakpoints_core = 'medium-6' %}
+    {% else %}
+        {% set breakpoints_image = 'smedium-4 mlarge-3' %}
+        {% set breakpoints_core = 'smedium-8 mlarge-9' %}
+    {% endif %}
+{% else %}
+    {% if r.thumbnail %}
+        {% set breakpoints_image = 'xlarge-5' %}
+        {% set breakpoints_core = 'xlarge-7' %}
+    {% else %}
+        {% set breakpoints_image = 'large-4 xlarge-3' %}
+        {% set breakpoints_core = 'large-8 xlarge-9' %}
+    {% endif %}
+{% endif %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+    {% if collection == 'collections' %}
+        <div class="grid-x align-middle collection-title">
+            <div class="cell"><i class="show-for-medium fas fa-archive icon-left"></i>{{r.display_label}}</div>
+        </div>
+    {% endif %}
+
+    <div class="media-object resource">
+        <div class="media-object-section main-section resource-section">
+            {% if collection == 'records' %}{% include "resources/record.html" %}
+            {% elif collection == 'people' %}{% include "resources/person.html" %}
+            {% elif collection == 'locations' %}{% include "resources/location.html" %}
+            {% elif collection == 'organisations' %}{% include "resources/organisation.html" %}
+            {% elif collection == 'events' %}{% include "resources/event.html" %}
+            {% elif collection == 'objects' %}{% include "resources/object.html" %}
+            {% elif collection == 'collections' %}{% include "resources/collection.html" %}
+            {% endif %}
+        </div>
+
+        <div class="media-object-section show-for-large resource-submenu hide-for-print">
+            <div data-sticky-container>
+                <nav class="sticky toc" data-sticky data-margin-top="4" data-anchor="resource-container">
+                    <h6 class="text-right toc-heading">indhold</h6>
+                    <ul class="vertical menu align-right toc-list" data-magellan data-smooth-scroll data-offset="50">
+                        {% if collection == 'records' %}{% include 'resources/record_menu.html' %}
+                        {% elif collection == 'people' %}{% include 'resources/person_menu.html' %}
+                        {% elif collection == 'locations' %}{% include 'resources/location_menu.html' %}
+                        {% elif collection == 'organisations' %}{% include 'resources/organisation_menu.html' %}
+                        {% elif collection == 'events' %}{% include 'resources/event_menu.html' %}
+                        {% elif collection == 'objects' %}{% include 'resources/object_menu.html' %}
+                        {% elif collection == 'collections' %}{% include 'resources/collection_menu.html' %}
+                        {% endif %}
+                    </ul>
+                    <br>
+                    <h6 class="text-right toc-heading">actions</h6>
+                    <ul class="vertical menu align-right toc-list">
+                        <li>
+                            <a href="?fmt=json">JSON-format<i class="far fa-file-code icon-right"></i></a>
+                        </li>
+                        <li>
+                            <a href="javascript:window.print()">Print siden<i class="fas fa-print icon-right"></i></a>
+                        </li>
+                        {% if collection != 'records' and employee %}
+                            {% if collection == 'collections' %}
+                                {% set endpoint = 'collections' %}
+                            {% else %}
+                                {% set endpoint = 'entities' %}
+                            {% endif %}
+                            <li>
+                                <a href="https://aarhusiana.appspot.com/{{endpoint}}/{{r.id}}?operation=edit&rel_edit=True">Redigér<i class="fas fa-pencil-alt icon-right"></i></a>
+                            </li>
+                        {% endif %}
+
+                        {% if collection == 'records' %}
+                            {% include 'resources/record_actions.html' %}
+                        {% endif %}
+
+                        {# Udkommenteret for now. Bruges hvis en entitet har egensindige actions
+                            {% if collection == 'records' %}{% include 'resources/record_actions.html' %}
+                            {% elif collection == 'people' %}{% include 'resources/person_actions.html' %}
+                            {% elif collection == 'locations' %}{% include 'resources/location_actions.html' %}
+                            {% elif collection == 'organisations' %}{% include 'resources/organisation_actions.html' %}
+                            {% elif collection == 'events' %}{% include 'resources/event_actions.html' %}
+                            {% elif collection == 'objects' %}{% include 'resources/object_actions.html' %}
+                            {% elif collection == 'collections' %}{% include 'resources/collection_actions.html' %}
+                            {% endif %}
+                        #}
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

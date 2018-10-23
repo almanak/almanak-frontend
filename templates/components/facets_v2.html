@@ -1,0 +1,70 @@
+<ul class="facets-v2 menu vertical accordion-menu" data-accordion-menu data-multi-open="false">
+    {% for idx in ['availability', 'usability', 'content_types', 'subjects'] %}
+        <li>
+            <a href="#">{{total_facets[idx].get('label')}}</a>
+            <ul class="menu vertical nested">
+            {% for item in total_facets[idx].get('content') recursive %}
+                {% if item.id in active_facets.get(idx) %}
+                    {% set i = active_facets[idx].get(item.id) %}
+
+                    {% if i.get('remove_link') == 'root' %}
+                    <li class="facet-remove">
+                        <a href="/search">
+                            <div class="media-object">
+                                <div class="media-object-section main-section">{{item.label}}</div>
+                                <div class="media-object-section facet-clear"><span class="far fa-times-circle"></span></div>
+                            </div>
+                        </a>
+                    {% elif i.remove_link %}
+                    <li class="facet-remove">
+                        <a href="/search?{{i.remove_link}}">
+                            <div class="media-object">
+                                <div class="media-object-section main-section">{{item.label}}</div>
+                                <div class="media-object-section facet-clear"><span class="far fa-times-circle"></span></div>
+                            </div>
+                        </a>
+                    {% elif i.add_link %}
+                        {% if item.children %}
+                        <li class="facet-trigger">
+                            <a href="#">
+                                <div class="media-object">
+                                    <div class="media-object-section main-section">{{item.label}}</div>
+                                    <div class="media-object-section"></div>
+                                </div>
+                            </a>
+                            <ul class="menu vertical nested">
+                                <li class="facet-parent">
+                                    <a  href="/search?{{i.add_link}}">
+                                        <div class="media-object">
+                                            <div class="media-object-section main-section">Vælg alt herunder</div>
+                                            <div class="media-object-section facet-count">({{i.count}})</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                {{ loop( item.children ) }}
+                            </ul>
+                        {% else %}
+                        <li>
+                            <a href="/search?{{i.add_link}}">
+                                <div class="media-object">
+                                    <div class="media-object-section main-section">{{item.label}}</div>
+                                    <div class="media-object-section facet-count">({{i.count}})</div>
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+    <li>
+        <a href="#">Datering</a>
+        <ul class="menu vertical nested">
+            <li style="padding: .5rem .9rem .5rem .5rem;color:#fefefe;">
+                {% include 'components/search_form_dates.html' %}
+            </li>
+        </ul>
+    </li>
+</ul>

@@ -1,0 +1,26 @@
+<dl>
+	{% if userinfo %}
+		{% for k,v in userinfo.items() %}
+			<dt>{{k}}</dt>
+			<dd>{{v}}</dd>
+		{% endfor %}
+	{% endif %}
+</dl>
+
+<dl>
+	{% if user %}
+		{% for k,v in user.items() %}
+			<dt>{{k}}</dt>
+			<dd>{{v}}</dd>
+		{% endfor %}
+	{% endif %}
+</dl>
+
+<dl>
+	{% if session %}
+		{% for k,v in session.items() %}
+			<dt>{{k}}</dt>
+			<dd>{{v}}</dd>
+		{% endfor %}
+	{% endif %}
+</dl>

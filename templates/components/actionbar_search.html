@@ -1,0 +1,19 @@
+<div class="actionbar_search hide-for-print" style="padding:.5rem;">
+    <button data-created="{{search.created}}" class="button small secondary search-handler" data-action="delete-search" title="Slet søgningen">
+        <span class="fas fa-times icon-left"></span><span>Slet</span>
+    </button>
+    <button class="button small" data-open="update-search-modal-{{search.created|replace('.', '')|replace(':', '')}}" title="Redigér søgebeskrivelsen">
+        <span class="far fa-edit icon-left"></span><span>Redigér</span>
+    </button>
+    <!-- Hidden modal. Used for updating a search-description -->
+    <div class="reveal" id="update-search-modal-{{search.created|replace('.', '')|replace(':', '')}}" data-reveal data-created="{{search.created}}">
+        <p>Redigér søgebeskrivelsen:</p>
+        <input type="text" name="description" value="{{search.description}}" autocomplete="off"/>
+        <button class="button small search-handler" type="submit" data-action="update-search" data-created="{{search.created}}">
+            <span class="far fa-save icon-left"></span><span>Gem</span>
+        </button>
+        <button class="close-button" data-close aria-label="Close modal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+</div>

@@ -1,0 +1,208 @@
+{# View - specific for 'collection' #}
+
+{# Image and core-data #}
+<div class="record-container" id="resource-container">
+    <div class="grid-x grid-padding-x">
+        <div class="cell {{breakpoints_image}} resource-representation text-center">
+            {% if r.portrait %}
+                {% if r.portrait is string %}
+                    <img class="resource-portrait" src="{{r.portrait}}">
+                {% else %}
+                    <img class="resource-portrait" src="{{r.portrait[0]}}">
+                {% endif %}
+            {% else %}
+                <i class="resource-icon fas fa-archive fa-9x"></i>
+            {% endif %}
+        </div>
+
+        <div class="cell {{breakpoints_core}} resource-core">
+            {% if r.collectors %}
+                <div class="media-object">
+                    <div class="media-object-section app_keylabel">Arkivskaber</div>
+                    <div class="media-object-section main-section">
+                        {% for item in r.collectors %}
+                            {% if ';' in item %}
+                                <div>
+                                    <a class="collector-link" href="/search?collectors={{item.split(';')[0]}}">{{item.split(';')[1]}}</a>
+                                </div>
+                            {% else %}
+                                <div class="collector-link">{{item}}</div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if r.alternative_titles %}
+                <div class="media-object">
+                    <div class="media-object-section app_keylabel">Alt. titler</div>
+                    <div class="media-object-section main-section">
+                        {% for item in r.alternative_titles %}
+                            <div>{{item}}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if r.curators %}
+                <div class="media-object">
+                    <div class="media-object-section app_keylabel">Kurator</div>
+                    <div class="media-object-section main-section">
+                        {% for item in r.curators %}
+                            {% if ';' in item %}
+                                <div>
+                                    <a class="resource-link" href="/search?curators={{item.split(';')[0]}}">{{item.split(';')[1]}}</a>
+                                </div>
+                            {% else %}
+                                <div>{{item}}</div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if r.date_from or r.date_to %}
+            <div class="media-object">
+                <div class="media-object-section app_keylabel">Yderår</div>
+                <div class="media-object-section main-section">
+                    {% if resource.date_from %}{{resource.date_from}}{% endif %} - {% if resource.date_to %}{{resource.date_to}}{% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if r.bulk_years %}
+                <div class="media-object">
+                    <div class="media-object-section app_keylabel">Hovedår</div>
+                    <div class="media-object-section main-section">{{r.bulk_years}}</div>
+                </div>
+            {% endif %}
+
+            {% if r.extent %}
+                <div class="media-object">
+                    <div class="media-object-section app_keylabel">Omfang</div>
+                    <div class="media-object-section main-section">{{r.extent}}</div>
+                </div>
+            {% endif %}
+
+            {% include 'components/actionbar_collection.html' %}
+        </div>
+    </div>
+
+    {# Description #}
+    {% if r.summary or r.description or r.content_and_scope %}
+        <h5 id="description">Beskrivelse</h5>
+        {% if r.summary %}
+            <div class="media-object stack-for-small" style="font-weight: bold;">
+                <div class="media-object-section app_keylabel">Abstrakt</div>
+                <div class="media-object-section main-section" style="white-space: pre-line;">{{r.summary}}</div>
+            </div>
+        {% endif %}
+
+        {% if r.description %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Beskrivelse</div>
+                <div class="media-object-section main-section" style="white-space: pre-line;">{{ r.description.replace('http://', 'https://')|urlize(45) }}</div>
+            </div>
+        {% endif %}
+
+        {% if r.content_and_scope %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Opbygning</div>
+                <div class="media-object-section main-section" style="white-space: pre-line;">{{r.content_and_scope}}</div>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    {# Accessability #}
+    {% if r.access or r.legal_status or r.level_of_digitisation or r.citation or r.associated_material %}
+        <h5 id="accessability">Tilgængelighed og brug</h5>
+        {% if r.access %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Tilgængelighed</div>
+                <div class="media-object-section main-section" style="white-space: pre-line;">{{r.access}}</div>
+            </div>
+        {% endif %}
+
+        {% if r.legal_status %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Juridiske forhold</div>
+                <div class="media-object-section main-section" style="white-space: pre-line;">{{r.legal_status}}</div>
+            </div>
+        {% endif %}
+
+        {% if r.level_of_digitisation %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Digitalisering</div>
+                <div class="media-object-section main-section" style="white-space: pre-line;">{{r.level_of_digitisation}}</div>
+            </div>
+        {% endif %}
+
+        {% if r.citation %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Citation</div>
+                <div class="media-object-section main-section" style="white-space: pre-line;">{{r.citation}}</div>
+            </div>
+        {% endif %}
+
+        {% if r.associated_material %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Relateret materiale</div>
+                <div class="media-object-section main-section" style="white-space: pre-line;">{{ r.associated_material.replace('http://', 'https://')|urlize(45) }}</div>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    {# Provenance #}
+    {% if r.custodial_history or r.accumulation_range or r.level_of_kassation or r.accrual_status %}
+        <h5 id="provenance">Afleveringshistorik</h5>
+        {% if r.custodial_history %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Proveniens</div>
+                <div class="media-object-section main-section" style="white-space: pre-line;">{{r.custodial_history}}</div>
+            </div>
+        {% endif %}
+
+        {% if r.accumulation_range %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Indsamlingsår</div>
+                <div class="media-object-section main-section" style="white-space: pre-line;">{{r.accumulation_range}}</div>
+            </div>
+        {% endif %}
+
+        {% if r.level_of_kassation %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Kassation</div>
+                <div class="media-object-section main-section" style="white-space: pre-line;">{{r.level_of_kassation}}</div>
+            </div>
+        {% endif %}
+
+        {% if r.accrual_status %}
+            <div class="media-object stack-for-small">
+                <div class="media-object-section app_keylabel">Indkomstens status</div>
+                <div class="media-object-section main-section" style="white-space: pre-line;">{{r.accrual_status}}</div>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    {# Sources #}
+    {% if r.sources %}
+        <h5 id="sources">Literatur og kilder</h5>
+        {% for item in r.sources %}
+            <div>{{ item.replace('http://', 'https://')|urlize(45) }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {# Series (dynamically produced for each view) #}
+    {% if r.series %}
+        <h5 id="series">Arkivserier</h5>
+        <p>Browse i samlingens serier. Klik på en given serie for at se, hvilke materialer, der er placeret her.</p>
+        {% include 'resources/collection_series.html' %}
+    {% endif %}
+
+    {# Collection_tags (dynamically produced for each view) #}
+    {% if r.collection_tags %}
+        <h5 id="collection_tags">Samlingstags</h5>
+        <p>Browse i samlingens tags. Klik på et tag for at se, hvilke materialer, der er opmærket med dette.</p>
+        {% include 'resources/collection_tags.html' %}
+    {% endif %}
+</div>

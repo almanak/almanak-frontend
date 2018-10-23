@@ -1,0 +1,28 @@
+    {# Tilføj sagsID som række i core-oplistningen #}
+    {% if r.original_id %}
+        <div class="media-object">
+            <div class="media-object-section app_keylabel">Journalnr.</div>
+            <div class="media-object-section">{{r.original_id}}</div>
+        </div>
+    {% endif %}
+
+    {% if r.admin_data and r.admin_data.get('agendaItems') %}
+        <div id="agendaItems-container" class="hide">
+            <div id="agendaItems">{{r.admin_data.get('agendaItems')}}</div>
+        </div>
+    {% endif %}
+
+{# UDKOMMENTERET
+    {% if resource.collection.id == 47 %}
+        {% if resource.admin_data %}
+        <div class="pad-top_large">
+            <h3>Årsudgivelsen omfatter følgende møder</h3>
+            <div>
+                {% for key, value in resource.admin_data.items() %}
+                    <span>{{key[0:4]}}-{{key[4:6]}}-{{key[6:8]}}: </span><span>{{value}}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+#}

@@ -1,0 +1,210 @@
+{% extends '_base.html' %}
+
+{% set title = "Søgeresultat" %}
+{% set vars = {"date_from_dict": False, "date_to_dict": False} %}
+
+{% block content %}
+    {% if collection_search %}
+        <div class="grid-x align-middle collection-title">
+            {% for _dict in filters %}
+                {% if _dict.get('key') == 'collection' and not _dict.get('negated') %}
+                    <div class="cell"><i class="show-for-medium fas fa-archive icon-left"></i>{{_dict.get('label')}}</div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if result %}
+        {# Single row grid for number of results and actions #}
+        <div class="grid-x align-middle hide-for-print">
+            <div class="cell small-12 medium-6 small-order-2 medium-order-1 search-count">
+                <div style="padding:.5em;color:#2f5074;">
+                    {% if total > 10000 %}
+                        <span>Flere end 10.000 resultater...</span>
+                    {% else %}
+                        <span>{{start + 1}} - {% if (start + size) > total %}{{total}}{% else %}{{start + size}}{% endif %} af {{total}} resultater</span>
+                    {%endif %}
+                </div>
+            </div>
+            <div class="cell small-12 medium-6 small-order-1 medium-order-2 search-actions">
+                <ul class="menu align-right">
+                    {% if session.get('profile') %}
+                        <li>
+                            <a id="save-search-trigger" title="Gem søgningen" data-open="save-search-modal">
+                                <span class="fas fa-save fa-lg"></span>
+                            </a>
+                            <div id="save-search-modal" class="reveal" data-reveal>
+                                <h4>Gem søgningen</h4>
+                                <p>Giv søgningen en passende beskrivelse:</p>
+                                <input type="text" name="description"/>
+                                <button class="button small search-handler" data-action="create-search" data-url="{{session.get('latest_search')}}">Gem</button>
+                                <button class="close-button" data-close aria-label="Close modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </li>
+                    {% endif %}
+                    <li>
+                        <a href="javascript:window.print()" title="Print søgeresultatet"><span class="fas fa-print fa-lg"></span></a>
+                    </li>
+                    <li>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank" title="Del på Facebook">
+                            <span class="fab fa-facebook fa-lg"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/intent/tweet?text=&via=wdweekly" target="_blank" title="Del på Twitter">
+                            <span class="fab fa-twitter fa-lg"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        {# Single row grid with pagnation and search-options #}
+        <div class="grid-x align-middle hide-for-print" style="height:48px;background-color:rgba(125, 162, 202, 0.1);padding-right:.5em;padding-left:.5em;">
+            <div class="cell shrink">
+                {% include 'components/pagination.html' %}
+            </div>
+
+            {# Use single options-dropdown on small screens #}
+            <div class="cell auto hide-for-xlarge">
+                <ul class="menu dropdown align-right" data-dropdown-menu>
+                    <li>
+                        <a href=""><i class="fas fa-sliders-h icon-left"></i>Visning</a>
+                        <ul class="menu">
+                            {% if previous or next %}
+                                <li class="menu-text">Resultater per side</li>
+                                {% for s in size_list %}
+                                    {% if s.selected %}
+                                        <li class="is-active"><a>{{s.label}}</a></li>
+                                    {% else %}
+                                        <li><a href="/search?{{s.link}}">{{s.label}}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif%}
+
+                            <li class="menu-text">Visning</li>
+                            {% for v in view_list %}
+                                {% if v.selected %}
+                                    <li class="is-active {% if v.label == 'To kolonner' %}show-for-medium{% endif %}">
+                                        <a>{{v.label}}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="{% if v.label == 'To kolonner' %}show-for-medium{% endif %}">
+                                        <a href="/search?{{v.link}}">{{v.label}}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            <li class="menu-text">Sortering</li>
+                            {% for s in sort_list %}
+                                {% if s.selected %}
+                                    <li class="is-active"><a>{{s.label}}</a></li>
+                                {% else %}
+                                    <li><a href="/search?{{s.link}}">{{s.label}}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            {# Convert to multiple option-dropdowns on medium #}
+            <div class="cell auto show-for-xlarge">
+                <ul class="menu dropdown align-right" data-dropdown-menu data-disable-hover>
+                    {% if previous or next %}
+                    <li>
+                        <a>{{size}} per side</a>
+                        <ul class="menu">
+                        {% for s in size_list %}
+                            {% if not s.selected %}
+                            <li>
+                                <a href="/search?{{s.link}}">{{s.label}} per side</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </li>
+                    {% endif%}
+
+                    <li>
+                        {% for v in view_list %}
+                            {% if v.selected %}
+                            <a><span class="{{v.icon}} icon-left"></span>{{v.label}}</a>
+                            {% endif %}
+                        {% endfor %}
+                        <ul class="menu">
+                        {% for v in view_list %}
+                            {% if not v.selected %}
+                            <li>
+                                <a href="/search?{{v.link}}"><span class="{{v.icon}} icon-left"></span>{{v.label}}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </li>
+
+                    <li>
+                        {% for s in sort_list %}
+                            {% if s.selected %}
+                            <a><span class="{{s.icon}} icon-left"></span>{{s.label}}</a>
+                            {% endif %}
+                        {% endfor %}
+                        <ul class="menu">
+                        {% for s in sort_list %}
+                            {% if not s.selected %}
+                                <li>
+                                    <a href="/search?{{s.link}}"><span class="{{s.icon}} icon-left"></span>{{s.label}}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="{% if view == 'gallery' %}gallery-results{% endif %}" class="{% if view == 'gallery' %}masonry{% else %}grid-x{% endif %} searchresult">
+            {% if view == 'gallery' %}
+                {% for record in result %}
+                    <div class="masonry-item" data-resource-id="{{record.id}}">{% include "components/galleryitem_listview_v2.html" %}</div>
+                {% endfor %}
+
+            {% elif view == 'list' %}
+                {% for record in result %}
+                    <div class="cell listitem" data-resource-id="{{record.id}}">{% include "components/listitem_list.html" %}</div>
+                {% endfor %}
+
+            {% endif %}
+        </div>
+
+        {# Single row grid for pagination and jump-to-page #}
+        {% if next or previous %}
+            <div class="grid-x align-justify hide-for-print" style="margin:2em 0;padding:.5em;">
+                <div class="cell shrink">
+                    {% include 'components/pagination.html' %}
+                </div>
+                <form class="cell shrink" id="page-form" style="display: none;" data-size="{{size}}">
+                    <div class="input-group">
+                        <span class="input-group-label show-for-medium">Gå til side:</span>
+                        <input class="input-group-field" style="width:3.5em;height:2em;" type="number" name="start" value="1" min="1" max="{{(total//size) + 1}}">
+                        <div class="input-group-button">
+                            <input class="button" type="submit" value="Gå">
+                        </div>
+                    </div>
+                    {% for tup in params %}
+                        {% if tup[0] != 'start' %}<input type="hidden" name="{{tup[0]}}" value="{{tup[1]}}">{% endif %}
+                    {% endfor %}
+                </form>
+            </div>
+        {% endif %}
+
+    {# If not results show zero-hits html-component #}
+    {% else %}
+        <div class="zero-hits-container" style="padding: 1rem;max-width:40em;margin:0 auto;">
+            {% include 'subpages/zero_hits.html' %}
+        </div>
+    {% endif %}
+
+{% endblock content %}

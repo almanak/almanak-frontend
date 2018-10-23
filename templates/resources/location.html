@@ -1,0 +1,158 @@
+{# View - specific for location-entities (places and addresses) #}
+
+{% if page and page == 'resourcepage' %}
+    {% if r.portrait or (r.latitude and r.longitude) %}
+        {% set breakpoints_image = 'medium-6' %}
+        {% set breakpoints_core = 'medium-6' %}
+    {% else %}
+        {% set breakpoints_image = 'smedium-4 mlarge-3' %}
+        {% set breakpoints_core = 'smedium-8 mlarge-9' %}
+    {% endif %}
+{% else %}
+    {% if r.portrait %}
+        {% set breakpoints_image = 'xlarge-5' %}
+        {% set breakpoints_core = 'xlarge-7' %}
+    {% else %}
+        {% set breakpoints_image = 'large-4 xlarge-3' %}
+        {% set breakpoints_core = 'large-8 xlarge-9' %}
+    {% endif %}
+{% endif %}
+
+{# Image and core-data #}
+<div class="record-container" id="resource-container">
+    <div class="grid-x grid-padding-x">
+        <div class="cell {{breakpoints_image}} resource-representation text-center">
+            {% if r.portrait %}
+                {% if r.portrait is string %}
+                    {% set image = r.portrait %}
+                {% else %}
+                    {% set image = r.portrait[0] %}
+                {% endif %}
+
+                <div id="single-image" style="position: relative;">
+                    <a href="{{image|replace('http://', 'https://')}}">
+                        <img class="resource-portrait" src="{{image|replace('http://', 'https://')}}"/>
+                        <div class="play-icon">
+                            <span class="fas fa-search-plus fa-2x"></span>
+                        </div>
+                    </a>
+                </div>
+            {% elif r.latitude and r.longitude %}
+                    <img class="resource-portrait" src="https://api.mapbox.com/v4/mapbox.pirates/pin-m-circle+7da2ca({{r.longitude}},{{r.latitude}})/{{r.longitude}},{{r.latitude}},17/640x640.png?access_token=pk.eyJ1IjoiY2prIiwiYSI6ImNqZDdmanYzaDBjNnUzNHA1d2xldWZ4NjMifQ.53Ja6IuQ88Vr3UhrV2Ybmg">
+                    <span class="align-right" style="font-size:75%">
+                        © <a href='https://www.mapbox.com/about/maps/'>Mapbox</a>
+                        © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>
+                    </span>
+            {% else %}
+                {% if r.schema == 'place' %}
+                    <i class="resource-icon fas fa-map-signs fa-9x"></i>
+                {% else %}
+                    <i class="resource-icon fas fa-map-marker-alt fa-9x"></i>
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="cell {{breakpoints_core}} resource-core">
+
+            {% if r.display_label %}
+                <h6 class="resource-title">{{r.display_label}}</h6>
+            {% endif %}
+
+            {% if r.schema == 'address' %}
+                {% if r.name %}
+                    <div class="media-object">
+                        <div class="media-object-section app_keylabel">Gadenavn</div>
+                        <div class="media-object-section main-section">{{r.name}}</div>
+                    </div>
+                {% endif %}
+
+                {% if r.addr_nr %}
+                    <div class="media-object">
+                        <div class="media-object-section app_keylabel">Husnummer</div>
+                        <div class="media-object-section main-section">{{r.addr_nr}}</div>
+                    </div>
+                {% endif %}
+
+                {% if r.zipcode %}
+                    <div class="media-object">
+                        <div class="media-object-section app_keylabel">Postnummer</div>
+                        <div class="media-object-section main-section">{{r.zipcode}}</div>
+                    </div>
+                {% endif %}
+
+                {% if r.latitude and r.longitude %}
+                    <div class="media-object">
+                        <div class="media-object-section app_keylabel">Geo-koordinat</div>
+                        <div class="media-object-section main-section">{{r.latitude}}, {{r.longitude}}</div>
+                    </div>
+                {% endif %}
+
+                {% if r.rotation %}
+                    <div class="media-object">
+                        <div class="media-object-section app_keylabel">Rotation</div>
+                        <div class="media-object-section main-section">{{r.rotation}}</div>
+                    </div>
+                {% endif %}
+
+            {% elif r.schema == 'place' %}
+                {% if r.named_date %}
+                    <div class="media-object">
+                        <div class="media-object-section app_keylabel">Navngivet</div>
+                        <div class="media-object-section main-section">{{r.named_date}}</div>
+                    </div>
+                {% endif %}
+
+            {% endif %}
+
+            {% if r.local_area %}
+                <div class="media-object">
+                    <div class="media-object-section app_keylabel">Lokalområde</div>
+                    <div class="media-object-section main-section">{{r.local_area}}</div>
+                </div>
+            {% endif %}
+
+            {% if r.parish %}
+                <div class="media-object">
+                    <div class="media-object-section app_keylabel">Sogn</div>
+                    <div class="media-object-section main-section">{{r.parish}}</div>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    {# Description #}
+    {% if r.description %}
+        <h5 id="description">Beskrivelse</h5>
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Beskrivelse</div>
+            <div class="media-object-section main-section" style="white-space: pre-line;">
+                {{ r.description|urlize(nofollow=True, target='_blank') }}
+            </div>
+        </div>
+    {% endif %}
+
+    {# Sources #}
+    {% if r.sources %}
+        <h5 id="sources">Kilder</h5>
+        <div class="media-object">
+            <div class="media-object-section main-section">
+                {% for item in r.sources %}
+                    <div>{{ item.replace('http://', 'https://')|urlize(65) }}</div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {# Extension-data #}
+    {% if r.ext_data %}
+        <h5 id="extension">Udvidet data</h5>
+        {% for k, v in r.ext_data.items() %}
+            {% if v %}
+                <div class="media-object">
+                    <div class="media-object-section app_keylabel">{{k|replace('_', ' ')}}</div>
+                    <div class="media-object-section main-section">{{v}}</div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</div>

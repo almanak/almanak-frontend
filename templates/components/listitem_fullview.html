@@ -1,0 +1,99 @@
+{#  DOCS
+    Single listitem, generated from a full record_view. The full-view is
+    needed, as the associated actionbars in certain views depends on information
+    about availabitity and storage_ids.
+    Needs to be wrapped in a '.listitem'
+#}
+
+{% set icon = ICONS[record.content_types[0].get('id')[0]|string] %}
+<a class="media-object" href="/records/{{record.id}}">
+    {% if record.thumbnail %}
+        <div class="media-object-section list-thumbnail">
+            {%  if record.availability > 3 or readingroom or session.get('is_employee') %}
+                <img src="{{record.thumbnail}}">
+            {% else %}
+                <div class="align-center" style="display:flex;padding-top:1rem;padding-bottom:1rem;">
+                    <i class=" fas fa-lock fa-4x" style="opacity:.6;"></i>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="media-object-section main-section">
+        {% if record.label %}
+            <p class="heading">{{record.label|truncate(200)}}</p>
+        {% elif record.heading %}
+            <p class="heading">{{record.heading|truncate(200)}}</p>        
+        {% endif %}
+
+        {% if record.summary %}
+            <p class="summary">{{record.summary|truncate(300)}}</p>
+        {% elif record.description %}
+            <p class="summary">{{record.description|truncate(300)}}</p>
+        {% endif %}
+
+        {% if not (record.summary or record.label) %}
+            {% if record.desc_notes %}
+                <p class="summary">{{record.desc_notes|truncate(300)}}</p>
+            {% else %}
+                <p class="summary">Materialet er ikke beskrevet</p>
+            {% endif %}
+        {% endif %}
+
+        {% if record.content_types %}
+            <p class="content_type">
+                <i class="content_type-icon {{icon}}"></i>
+                <span class="content_type-label">{{record.content_types[0].get('label')[0]}}</span>
+                {% if record.content_types[0].get('label')|length > 1 %}
+                    <span class="separator">/</span>        
+                    <span class="content_type-sublabel">{{record.content_types[0].get('label')[1]}}</span>
+                {% endif %}
+            </p>
+        {% endif %}
+
+        <p class="date">
+            {% if record.date_from or record.date_to %}
+            <span>DATERING: </span>
+            {% endif %}
+
+            {% if record.date_from %}
+                {% if record.date_to %}
+                    {% if record.date_to == record.date_from %}
+                        <span>{{record.date_from}}</span>
+                    {% elif record.date_from[0:6] == record.date_to[0:6] %}
+                        <span>{{record.date_from[0:6]}}</span>
+                    {% elif record.date_from[0:4] == record.date_to[0:4] and record.date_from[4:8] == '0101' %}
+                        <span>{{record.date_from[0:4]}}</span>
+                    {% elif record.date_from[4:8] == '0101' and record.date_to[4:8] == '1231' %}
+                        <span>{{record.date_from[0:4]}} ~ {{record.date_to[0:4]}}</span>
+                    {% else %}
+                        <span>{{record.date_from}} ~ {{record.date_to}}</span>
+                    {% endif %}
+                {% else %}
+                    <span>{{record.date_from}} ~</span>
+                {% endif %}
+            {% elif record.date_to %}
+                <span>~ {{record.date_to}}</span>
+            {% else %}
+                <span>Uden datering</span>
+            {% endif %}
+        </p>
+
+        {% if record.creators %}
+            <p class="creator">
+                <span class="creator-label">Ophav: {{record.creators[0].get('label')}}</span>
+                {% if record.creators|length > 1 %}
+                    <span class="and-more"> m.fl.</span>        
+                {% endif %}
+            </p>
+        {% endif %}
+
+        {% if record.collection %}
+            <p class="collection">
+                <i class="fas fa-archive"></i>
+                <span class="collection-label">{{record.collection.get('label')}}</span>
+            </p>
+        {% endif %}
+
+    </div>
+</a>

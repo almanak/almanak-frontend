@@ -1,0 +1,764 @@
+// Import original Foundation-scss
+@import '../scss/foundation';
+@include foundation-everything;
+
+// I override settings in the supplied settingsfile
+// And add my own stuff here
+@import '../scss/app/homepage';
+@import '../scss/app/autosuggest';
+@import '../scss/app/searchform';
+
+
+$masonry-css-column-gap: $global-margin;
+
+.masonry {
+    padding: .5em;
+    column-count: 1;
+    column-gap: $masonry-css-column-gap;
+
+    @include breakpoint(smedium) {
+        column-count: 2;
+    }
+
+    @include breakpoint(medium) {
+        column-count: 3;
+    }
+
+    @include breakpoint(large) {
+        column-count: 4;
+    }
+
+    @include breakpoint(xlarge) {
+        column-count: 5;
+    }
+}
+
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: $masonry-css-column-gap;
+}
+
+.icon-left {
+    padding-right: .5rem;
+}
+.icon-right {
+    padding-left: .5rem;
+}
+
+a {
+    color: get-color(primary);
+}
+
+a.resource-link {
+    &:hover {
+        border-bottom: 1px solid get-color(primary);
+    }
+}
+// Special look for collectors
+a.collector-link {
+    color: #c58702;
+    font-weight: bold;
+    &:hover {
+        border-bottom: 1px solid #c58702;
+    }
+}
+
+.play-icon {
+    // background-color: rgba(0, 0, 0, 0.1);
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    span {
+        color: $white;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        // height: 48px;
+        margin-left: -1rem;
+        margin-top: -1rem;
+        // width: 48px;
+    }
+}
+
+.toc {
+    .toc-heading {
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 85%;
+        color: #424242;
+    }
+    .toc-list {
+        a {
+            padding: .5rem 0;
+            font-size: 95%;
+        }
+    }
+}
+
+.app_keylabel {
+    text-transform: uppercase;
+    font-weight: bold;
+    padding-top: .2rem;  // trying to compensate for the small font-size
+    font-size: 80%;
+    color: #424242;
+    width: 10em;
+}
+
+.is-dropdown-submenu-item:hover a {
+    background-color: darken($white, 5%);
+}
+
+.is-dropdown-submenu-item a {
+    display: block;
+    width: 100%;
+    // background-color: darken($white, 5%);
+}
+
+.global-header-expansion,
+.global-header {
+    background-color: get-color(primary);
+    z-index: 50;
+    height: 48px;
+
+    .global-header-item {
+        border-left: 1px solid darken(get-color(primary), 5%);
+        &:hover {
+            background-color: darken(get-color(primary), 10%);
+        }
+    }
+    .global-header-link {
+        font-weight: bold;
+        color: $white !important;
+        &::after {
+            display: none !important;
+        }
+    }
+    .global-header-logo {
+        height: 36px;
+        display: inline-block;
+        margin-left: 6px;
+        img {
+            height: 100%;
+        }
+    }
+    .user-link {
+        background-color: darken(get-color(primary), 10%) !important;
+        &:hover {
+            background-color: darken(get-color(primary), 15%) !important;
+        }
+    }
+    .badge {
+        position:absolute;
+        top:5px;
+        right:5px;
+        background-color: get-color(secondary); // rgba(251, 141, 0, .7);
+        color: $white;
+    }
+    .is-dropdown-submenu-item:hover {
+        background-color: darken($white, 5%);
+    }
+    .menu a {
+        line-height: inherit;
+    }
+}
+// Trying to avoid flashes of open menus on pageload
+.no-js .global-header {
+    overflow-y: hidden;
+}
+.no-js .is-dropdown-submenu {
+    display: none;
+}
+
+.global-footer {
+    font-size: 90%;
+    color: $white;
+    background-color: rgba(60, 123, 155, .8);
+    .heading {
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 90%;
+        border-bottom: 1px solid lighten($white, 35%);
+        padding-bottom: .2rem;
+        margin-bottom: .6rem;
+    }
+    .cell {
+        padding: 2rem;
+    }
+    .left {
+        float: left;
+    }
+    .right {
+        float: right;
+    }
+}
+
+.collection-title {
+    min-height:48px;
+    font-size:120%;
+    color: $black;
+    background-color: get-color(secondary);
+    padding: .4rem .8rem;
+}
+
+.search-count {
+    text-align: center;
+    @include breakpoint(medium) {
+        text-align: left;
+    }
+}
+.search-actions {
+    border-bottom: 1px solid #e6e6e6;
+    @include breakpoint(medium) {
+        border: none;
+    }    
+}
+
+.filters {
+    // Filter and filter-negated act like facet-listitem-headers. but different cg-color
+    .filter {
+        background-color: rgba(get-color(primary), .5) !important;
+        &:hover {
+            background-color: rgba(get-color(primary), .55) !important;
+        }
+        li {
+            // background-color: rgba(get-color(primary), .2) !important;
+            // &:hover {
+            //     background-color: rgba(get-color(primary), .25) !important;
+            // }
+        }
+    }
+
+    .filter-negated {
+        background-color: rgba(get-color(secondary), .5) !important;
+        &:hover {
+            background-color: rgba(get-color(secondary), .55) !important;
+        }
+        &[aria-expanded="true"] > a {
+            background-color: rgba(get-color(secondary), .5) !important;
+        }
+    }
+
+
+    // Overriding zurb-default
+    .is-accordion-submenu-parent:not(.has-submenu-toggle) > a::after {
+        display: none;
+    }
+    .is-accordion-submenu-parent:not(.has-submenu-toggle) > a::before {
+        color: $white;
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: .8rem;
+        width: 40px;
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 600;
+        content: '\f107';
+    }
+    .is-accordion-submenu-parent[aria-expanded='true'] > a {
+        box-shadow: 0 3px 3px 0 hsla(0, 0%, 0%, 0.15);
+        z-index: 1;
+        // background-color: inherit !important;
+
+        &::before {
+            content: '\f106';            
+        }
+    }
+
+    .filter-title {
+        padding-right: 40px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    .filter-label {
+        font-style: italic;
+    }
+    .filter-icon {
+        font-size: 75%;
+    }
+}
+
+.series {
+    a {
+        font-weight: bold;
+        padding: .8rem 6px !important;
+        &:hover {
+            background-color: $light-gray;
+        }
+    }
+    [aria-expanded="true"] > a {
+        color: $white;
+        background-color: rgba(get-color(primary), .6);
+    }
+    ul {
+        margin-left: 0 !important;
+    }
+    li {
+        border: 1px solid $medium-gray;
+        border-collapse: true;
+    }
+    .media-object {
+        margin-bottom: 0;
+        padding-left: .2rem;
+    }
+}
+
+.facets-v3 {
+    .submenu-toggle {
+        width: 40px;
+        outline: none;            
+        color: $white;
+        &::after {
+            // hide zurb's default icon
+            display: none;
+        }
+        &::before {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: .8rem; // same padding as neighbouring .menu a
+            width: 40px;
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 600;
+            content: '\f107';
+        }
+        &[aria-expanded='true']::before {
+            content: '\f106';            
+        }
+    }
+    // Make room for toggle-icon on any nested level (not rootlevel)
+    .nested .has-submenu-toggle > a {
+        margin-top: .1rem;
+        margin-bottom: .1rem;
+        margin-right: 40px;
+        padding-top: .7rem;
+        padding-bottom: .7rem;
+        border-right: 1px solid $dark-gray;
+
+    }
+
+    // Global anchor-style. Often overridden in submenus
+    [aria-expanded="true"] > a {
+        background-color: rgba(get-color(primary), .5);
+    }
+
+    .facet-count {
+        font-size: 80%;
+    }
+
+    a {
+        color: rgba($white, .9);
+        padding: .8rem .4rem;
+    }
+
+    // Facets already in used in filtered search
+    .facet-remove {
+        background-color: rgba(get-color(secondary), .4) !important;
+        &:hover {
+            background-color: rgba(get-color(secondary), .5) !important;
+        }
+    }
+
+    // Container for all anchors
+    .media-object {
+        margin-bottom: 0;
+    }
+
+    // First level listitems
+    &.accordion-menu {
+        & > li {
+            background-color: lighten($dark-gray, 6%);
+            border: 1px solid $dark-gray;
+            &:hover {
+                background-color: lighten($dark-gray, 3%);
+            }
+            [aria-expanded="true"] > a {
+                background-color: rgba(get-color(primary), .3);
+            }
+        }
+        & > a {
+            font-weight: bold;
+        }
+    }
+
+    // Second level listitems
+    .is-accordion-submenu {
+        & > li {
+            background-color: lighten($dark-gray, 12%);
+            border: 1px solid lighten($dark-gray, 6%);
+            // border: collapse;
+            &:hover {
+                background-color: lighten($dark-gray, 9%);
+            }
+            [aria-expanded="true"] > a {
+                background-color: rgba(get-color(primary), .1);
+            }
+            & > a {
+                padding-left: .7rem;
+            }
+        }
+        a {
+            font-weight: normal;
+            padding: .8rem .5rem;        
+        }
+        // Remove all nested indentation
+        &.nested {
+            margin-left: 0;            
+        }
+    }
+
+    // Third level listitems
+    .is-accordion-submenu .is-accordion-submenu {
+        & > li {
+            background-color: lighten($dark-gray, 18%);
+            border: 1px solid lighten($dark-gray, 12%);
+            &:hover {
+                background-color: lighten($dark-gray, 15%);
+            }
+            [aria-expanded="true"] > a {
+                background-color: rgba(get-color(primary), .1);
+            }
+            & > a {
+                padding-left: 1rem;
+            }
+        }
+    }
+}
+
+// Old version, reused in v3
+.facets-v2 {
+    .is-accordion-submenu-parent > a {
+        &::after {
+            // hide zurb's default icon
+            display: none;
+        }
+        &::before {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: .8rem;
+            width: 40px;
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 600;
+            content: '\f107';
+        }
+    }
+    .is-accordion-submenu-parent[aria-expanded='true'] > a::before {
+        content: '\f106';            
+    }
+    
+    .is-accordion-submenu-parent:not(.has-submenu-toggle) > a::after {
+        display: none;
+    }
+
+    // Global anchor-style. Often overridden in submenus
+    [aria-expanded="true"] > a {
+        background-color: rgba(get-color(primary), .5);
+    }
+
+    .facet-count {
+        font-size: 80%;
+    }
+
+    a {
+        color: rgba($white, .9);
+        padding: .8rem .4rem;
+    }
+
+    // Facets already in used in filtered search
+    .facet-remove {
+        background-color: rgba(get-color(secondary), .4) !important;
+        &:hover {
+            background-color: rgba(get-color(secondary), .5) !important;
+        }
+    }
+
+    // Container for all anchors
+    .media-object {
+        margin-bottom: 0;
+    }
+
+    // First level listitems
+    &.accordion-menu {
+        & > li {
+            background-color: lighten($dark-gray, 6%);
+            border: 1px solid $dark-gray;
+            &:hover {
+                background-color: lighten($dark-gray, 3%);
+            }
+            [aria-expanded="true"] > a {
+                background-color: rgba(get-color(primary), .3);
+            }
+        }
+        & > a {
+            font-weight: bold;
+        }
+    }
+
+    // Second level listitems
+    .is-accordion-submenu {
+        & > li {
+            background-color: lighten($dark-gray, 12%);
+            border: 1px solid lighten($dark-gray, 6%);
+            // border: collapse;
+            &:hover {
+                background-color: lighten($dark-gray, 9%);
+            }
+            [aria-expanded="true"] > a {
+                background-color: rgba(get-color(primary), .1);
+            }
+            & > a {
+                padding-left: .7rem;
+            }
+        }
+        a {
+            font-weight: normal;
+            padding: .8rem .5rem;        
+        }
+        // Remove all nested indentation
+        &.nested {
+            margin-left: 0;            
+        }
+    }
+
+    // Third level listitems
+    .is-accordion-submenu .is-accordion-submenu {
+        & > li {
+            background-color: lighten($dark-gray, 18%);
+            border: 1px solid lighten($dark-gray, 12%);
+            &:hover {
+                background-color: lighten($dark-gray, 15%);
+            }
+            [aria-expanded="true"] > a {
+                background-color: rgba(get-color(primary), .1);
+            }
+            & > a {
+                padding-left: 1rem;
+            }
+        }
+    }
+}
+
+
+.searchtips {
+    font-size: 90%;
+    color: rgba($white, .9);
+    background-color: lighten($dark-gray, 6%);
+    border: 1px solid $dark-gray;
+    padding: .3rem .5rem;
+
+    li {
+        padding: .4rem 0;
+    }
+}
+
+.searchlinks {
+    font-size: 90%;
+    margin-top: 1.2rem;
+    margin-bottom: 5rem;
+    a {
+        display: inline-block;
+        margin: 0 .4rem;
+        padding: .3rem 0 .1rem;
+        color: rgba($white, .9);
+        border-bottom: 1px solid rgba($white, .9);
+        font-size: 95%;
+    }
+}
+
+.searchguide {
+    ul {
+
+    }
+    li {
+        padding: .2rem 0;
+    }
+}
+
+#searchbar {
+    background-color: $dark-gray;
+    color: rgba($white, .9);
+    width: 100%;
+    @include breakpoint(medium) {
+        // All CSS in here goes inside the media query
+        width: 18rem;
+    }
+    .searchbar-inner {
+        // Necessary to remove scrollbar (in combination with overflow-y:hidden on the #searchbar-parent)
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+    .close-button {
+        // turn .close-button into a block element
+        position: inherit;
+        display: inline-block;
+        margin-left: .5rem;
+    }
+    #date-form {
+        label,
+        .help-text,
+        .button {
+            color: rgba($white, .9);
+        }
+        .help-text {
+            margin-top: 0;
+        }
+    }
+}
+
+.gallery-item,
+.listitem {
+    .media-object {
+        // override default .media-object-rules
+        padding-left: 0;
+        margin-bottom: 0;
+    }
+    &:hover {
+        background-color: #fafafa;
+    }
+    p {
+        margin-bottom: .4rem;
+    }
+    .list-thumbnail {
+        width: 8em;
+        min-width: 8em;
+        img {
+            width: 100%;
+        }
+    }
+    .list-thumbnail-wide {
+        width: 15em;
+        min-width: 15em;
+        img {
+            width: 100%;
+        }
+    }
+    .heading {
+        font-weight: 400;
+    }
+    .summary {
+        font-size: 85%;
+    }
+    .collector {
+        font-size: 90%;
+        color: darken($dark-gray, 15%);
+    }
+    .date {
+        font-size: 85%;
+        color: gray;
+    }
+    .content_type {
+        font-size: 85%;
+        color: gray;
+    }
+}
+
+.listitem {
+    padding: 0.5em;
+    border-top: 1px solid #e6e6e6;
+
+}
+
+.gallery-item {
+    padding: 0;
+    border: 1px solid $light-gray;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.gallery-caption {
+    height: 100%;
+    overflow-y: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 350px;
+    z-index: 99999;
+    background-color: $white;
+}
+
+.gallery-box {
+    .lg-img-wrap {
+        padding-right: 360px;
+        // right: 300px;
+    }
+    .lg-actions .lg-next,
+    .lg-toolbar {
+        right: 360px;
+    }
+}
+
+.app-page-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding:.8em .8em 5em .8em;
+
+    .app-page-menu {
+        width: 260px;
+        margin-right: 1rem;
+        .menu-text {
+            background-color: lighten(get-color(primary), 15%);
+            color: $white;
+        }
+        a:hover {
+            background-color: lighten(get-color(primary), 30%);
+        }
+    }
+
+    .app-page-submenu {
+        width: 200px;
+        margin-left: 1rem;
+    }
+}
+
+
+.resource {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding:.8em .8em 5em .8em;
+    word-break: break-word;
+
+    h5 {
+        border-bottom: 1px solid #cacaca;
+        padding-bottom: .2rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    // sidebar
+    .resource-submenu {
+        width: 200px;
+        margin-left: 1rem;
+    }
+
+    .resource-title {
+        font-style: italic;
+        margin-bottom: 1.5rem;
+        color: #2b2b2b;
+    }
+
+    .resource-representation {
+        // margin: 0 auto;
+        padding: 0 2rem 2rem 0;
+    }
+
+    .resource-core {
+        padding-bottom: 2rem;
+    }
+
+    .resource-portrait {
+        max-width: 100%;  // needed to override global rule:  .media-object img {max-width: none;}
+        box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .resource-icon {
+        color: lighten(get-color(primary), 22%);
+    }
+}

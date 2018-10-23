@@ -1,0 +1,22 @@
+{# Collection-menu #}
+<li><a href="#description">Beskrivelse</a></li>
+
+{% if r.access %}
+<li><a href="#accessability">Tilgængelighed og brug</a></li>
+{% endif %}
+
+{% if r.custodial_history %}
+<li><a href="#provenance">Historik</a></li>
+{% endif %}
+
+{% if r.sources %}
+<li><a href="#sources">Kilder</a></li>
+{% endif %}
+
+{% if r.series %}
+<li><a href="#series">Arkivserier</a></li>
+{% endif %}
+
+{% if r.collection_tags %}
+<li><a href="#collection_tags">Samlingstags</a></li>
+{% endif %}
