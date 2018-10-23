@@ -67,36 +67,7 @@ class AppView(GUIView):
             return render_template('about.html', **self.context)
         else:
             return render_template('%s.html' % page, **self.context)
-            # return jsonify(self.context)
-
-
-# class AboutView(GUIView):
-#     """docstring for AboutView"""
-#     def dispatch_request(self, page):
-#         if page in ['about', 'content', 'availability', 'usability', 'whois']:
-#             self.context['page'] = 'app-page'
-#             self.context['subpage'] = page
-#             return render_template('about.html', **self.context)
-#         else:
-#             abort(404)
-
-
-# class SearchView(View):
-#     def dispatch_request(self):
-#         self.client = clientInterface.Client()
-#         self.context = self.client.list_resources(request.args)
-#         ip = request.headers.get('X-Forwarded-For')
-#         self.context['readingroom'] = ip in IP_WHITELIST
-#         # update current url and latest search
-#         ses.set_current_url(request)
-#         ses.set_latest_search(request)
-
-#         if request.args.get('view', '') == 'ids' or request.args.get('fmt') == 'json':
-#             return jsonify(self.context)
-#         else:
-#             self.context['page'] = 'searchpage'
-#             # return render_template('search.html', **self.context)
-#             return jsonify(self.context)
+            # TESTING: return jsonify(self.context)
 
 
 class SearchView_v2(GUIView):
@@ -297,12 +268,6 @@ class OrderAPI(MethodView):
         #                    data={'name': m.get('name'),
         #                          'resource': m.get('resource_id')})
         # return jsonify(response)
-
-
-# TO IMPLEMENT
-class UnitAPI(MethodView):
-    def get(self):
-        return jsonify({'implemented': False})
 
 
 class BookmarkAPI(MethodView):

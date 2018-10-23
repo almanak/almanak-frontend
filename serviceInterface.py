@@ -232,37 +232,6 @@ class Service():
 
         return series, collection_tags
         
-        # sorted_series = sort_by_value('value', series)
-        # out = []
-        # temp = {}
-        # series_size = len(sorted_series)
-
-        # for idx, _dict in enumerate(sorted_series):
-        #     cur_temp = temp
-        #     levels = _dict.get('value').split('/')
-        #     for level in levels:
-        #         if cur_temp.get('level'):
-
-        #         else:
-        #     if idx + 1 < series_size:
-        #         next_dict_value = sorted_series[idx + 1].get('value')
-        #         if next_dict_value.startswith(cur_dict_value):
-                    
-        #         else:
-        #             out
-        #     else:
-                
-        # sorted_collection_tags = sort_by_value('value', collection_tags)
-
-        # for facet, values in facets.items():
-        #     out = []
-        #     for level in values.get('buckets'):
-        #         b['add_link'] = encode(facet, b.get('value'))
-        #         out[b.get('value')] = b
-        #     result[facet] = out
-
-        # return api_response.get('facets')
-
     def list_resources_v2(self, query_params):
         # https://docs.aws.amazon.com/cloudsearch/latest/developerguide/search-api.html#structured-search-syntax
         # https://docs.aws.amazon.com/cloudsearch/latest/developerguide/searching-compound-queries.html

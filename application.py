@@ -3,7 +3,6 @@ import os
 import json
 
 # Third party libraries
-# from dotenv import load_dotenv
 import requests
 from six.moves.urllib.parse import urlencode
 
@@ -19,19 +18,7 @@ from flask import flash
 import views
 import db
 
-# load_dotenv('.env')
-
-
-# Init app
-app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY")
-app.debug = os.environ.get("DEBUG")
-app.config['SESSION_COOKIE_SECURE'] = os.environ.get('SESSION_COOKIE_SECURE', False)
-
-
-# app.jinja_env.auto_reload = True
-app.url_map.strict_slashes = False
-app.jinja_env.globals['ICONS'] = {
+ICONS = {
     "61": {
         "icon": "far fa-image",
         "label": "Billeder"
@@ -82,6 +69,18 @@ app.jinja_env.globals['ICONS'] = {
     }
 }
 
+
+# Init app
+app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY')
+app.debug = os.environ.get('DEBUG')
+app.config['SESSION_COOKIE_SECURE'] = os.environ.get('SESSION_COOKIE_SECURE', False)
+
+
+# app.jinja_env.auto_reload = True
+app.url_map.strict_slashes = False
+# app.jinja_env.globals['ICONS'] = {
+app.add_template_global(name='ICONS', f=ICONS)
 
 @app.before_request
 def before_request():
@@ -232,9 +231,6 @@ def login(page):
     if session.get('profile'):
         return redirect(url_for('show_profile'))
     else:
-        # Alternative Style
-        # return auth0.authorize(callback=os.environ.get("AUTH0_CALLBACK_URL"))
-
         params = {
             'redirect_uri': os.environ.get('AUTH0_CALLBACK_URL'),
             'response_type': 'code',
@@ -260,7 +256,7 @@ def logout():
 @app.route('/callback')
 def callback_handler():
     if not request.args.get('code'):
-        flash('Missing "code". Unable to handle login/signup at the moment.')
+        flash('Missing "code-param". Unable to handle login/signup at the moment.')
         if session.get('current_url'):
             return redirect(session.get('current_url'))
         else:
@@ -277,18 +273,18 @@ def callback_handler():
     # get token
     token_url = "https://{domain}/oauth/token".format(domain=os.environ.get("AUTH0_DOMAIN"))
     headers = {'content-type': 'application/json'}
-
     token_info = requests.post(token_url,
                                data=json.dumps(token_payload),
                                headers=headers).json()
 
-    # if not token
+    # if not token - return
     if not token_info.get('access_token'):
-        flash('Missing "access_token". Unable to handle login/signup at the moment.')
+        flash('Missing "access_token". Unable to handle login at the moment.')
         if session.get('current_url'):
             return redirect(session.get('current_url'))
         else:
             return redirect(url_for('index'))
+
 
     user_url = "https://{domain}/userinfo?access_token={access_token}" \
         .format(domain=os.environ.get("AUTH0_DOMAIN"),
@@ -319,15 +315,14 @@ def callback_handler():
             'roles': db_user.get('roles')
         }
 
-        session['is_employee'] = True if 'employee' in db_user.get('roles') else False
-        session['is_admin'] = True if 'admin' in db_user.get('roles') else False
+        session['is_employee'] = 'employee' in db_user.get('roles', [])
+        session['is_admin'] = 'admin' in db_user.get('roles', [])
 
         # Add bookmark_ids from db
         session['bookmarks'] = db.list_bookmarks(user_id=db_user.get('user_id'), ids_only=True)
 
         # Create session-cart, if not already created before login
-        if not session.get('cart'):
-            session['cart'] = []
+        session['cart'] = session.get('cart', [])
 
         # Add active orders from db
         # session['orders'] = db.get_orders(user_id=user.get('user_id'), ids_only=True)
@@ -340,4 +335,5 @@ def callback_handler():
 
 
 if __name__ == "__main__":
+    # Flask automatically detects if dotenv is installed, and then fetches the .env-file
     app.run(host='0.0.0.0', port=os.environ.get('PORT', 4000))

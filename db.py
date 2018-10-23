@@ -4,9 +4,6 @@ import copy
 
 from boto3 import resource
 from boto3.dynamodb.conditions import Key
-from dotenv import load_dotenv
-
-load_dotenv('.env')
 
 
 # The boto3 dynamoDB resource
