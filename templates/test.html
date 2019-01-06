@@ -2,7 +2,7 @@
 <div>JSON</div>
 
 <dl>
-{% for k, v in json_data.items() %}
+{% for k, v in session.items() %}
     <dt>{{k}}</dt>
     <dd>{{v}}</dd>
 {% endfor %}

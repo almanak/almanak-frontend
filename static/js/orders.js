@@ -29,8 +29,8 @@ $(document).ready(function() {
             contentType: 'application/json;charset=UTF-8'
         })
         .done(function(resp) {
+            console.log('inside done')
             if (!resp.error) {
-                console.log(resp);
                 if (method === 'DELETE') {
                     // If in orderlist-view, remove the listitem after deletion 
                     $('.userpage .order-handler[data-resource-id="' + resp.id + '"]').closest('.listitem').slideUp().remove();
@@ -42,9 +42,12 @@ $(document).ready(function() {
                     // If ordering a cartitem, remove the order-button
                     $('.userpage .order-handler[data-resource-id="' + resp.id + '"]').fadeOut().remove();
                 }
+            } else {
+                console.log(resp.error)
             }
         })
         .always(function(resp) {
+            // console.log(resp);
             notify(resp);
         });
     });

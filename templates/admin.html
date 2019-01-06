@@ -1,0 +1,126 @@
+{% extends '_base.html' %}
+{% set title = "Administration" %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+{% endblock head %}
+
+{% block scripts %}
+<script charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<!-- <script charset="utf8" src="https://cdn.datatables.net/1.10.19/js/dataTables.foundation.min.js"></script> -->
+<script src="{{ url_for('static', filename='js/tables.js') }}"></script>
+{% endblock scripts %}
+
+{% block content %}
+<div class="media-object app-page-container">
+    <div class="media-object-section show-for-large app-page-menu">
+        <ul class="menu vertical">
+        {% if subpage == 'users' %}
+            <li class="menu-text">
+                <span class="fas fa-fw fa-user"></span>
+                <span>Brugere</span>                    
+            </li>                    
+        {% else %}
+            <li>
+                <a href="/admin/users">
+                    <span class="fas fa-fw fa-user"></span>
+                    <span>Brugere</span>  
+                </a>
+            </li>
+        {% endif %}
+
+        {% if subpage == 'orders' %}
+            <li class="menu-text">
+                <span class="far fa-fw fa-check-square"></span>
+                <span>Bestillinger</span>                    
+            </li>                    
+        {% else %}
+            <li>
+                <a href="/admin/orders">
+                    <span class="far fa-fw fa-check-square"></span>
+                    <span>Bestillinger</span>  
+                </a>
+            </li>
+        {% endif %}
+        </ul>
+    </div>
+
+    <!-- <div class="media-object-section main-section profile-section"> -->
+    <div class="media-object-section main-section">
+    {% if subpage == 'users' %}
+        <h4>Brugere</h4>
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Brugernavn</div>
+            <div class="media-object-section main-section">{{session['profile'].get('name')}}</div>
+        </div>
+        <div class="media-object stack-for-small">
+            <div class="media-object-section app_keylabel">Email</div>
+            <div class="media-object-section main-section">{{session['profile'].get('email')}}</div>
+        </div>
+
+    {% elif subpage == 'orders' %}
+        <h4>Bestillinger</h4>
+        {% if orders %}
+            <div>
+                <p>Bestillinger er delt i aktive eller initierede. For at se hvilke arkivenheder,
+                    de enkelte bestillinger knytter sig til, tryk på 'Arkivenheder'
+                </p>
+            </div>
+            {% for i in ['available', 'initialized'] %}
+                {% if orders.get(i) %}
+                <h5>{{i|capitalize}}</h5>
+                <table id="{{i}}-orders-table" class="hover stack">
+                    <thead>
+                        <tr>
+                            <th>
+                                {% if i == 'available' %}Udløber
+                                {% elif i == 'initialized' %}Oprettet
+                                {% endif %}
+                            </th>
+                            <th>Bruger</th>
+                            <th>Resource</th>
+                            <th>Arkivenhed</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in orders.get(i) %}
+                        <tr>
+                            <td>
+                                {% if i == 'available' %}{{order.get('expires')}}
+                                {% elif i == 'initialized' %}{{order.get('created').split('T')[0]}}
+                                {% endif %}
+                            </td>
+                            <td>{{order.get('username')}}</td>
+                            <td>{{order.get('resource_id')}}</td>
+                            <td><a href="#">Vis arkivenheden</a></td>
+                            <td style="text-align:right;width:140px;">
+                                {% if i == 'initialized' %}
+                                <button data-resource-id="{{order.get('uuid')}}" class="button small order-handler" data-action="activate-order">
+                                    <span class="fas fa-check"></span>
+                                </button>
+                                {% endif %}                                
+                                <button data-resource-id="{{order.get('uuid')}}" class="button small order-handler" data-action="cancel-order">
+                                    <span class="fas fa-times"></span>
+                                </button>
+                                <button data-resource-id="{{order.get('uuid')}}" class="button small order-handler" data-action="print-order">
+                                    <span class="fas fa-print"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <div>
+                <strong>Ingen bestillinger</strong>
+            </div>
+        {% endif %}
+    </div>
+    {% else %}
+        <div><p>Wrong subpage</p></div>
+    {% endif %}
+</div>
+{% endblock content %}

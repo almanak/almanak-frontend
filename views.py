@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from os import environ as env
 
 # Third party
 from flask import request
@@ -7,6 +8,8 @@ from flask import send_from_directory
 from flask import jsonify
 from flask import abort
 from flask.views import View, MethodView
+
+from almanak.cloud import InventoryService
 
 # Application
 import session as ses
@@ -172,15 +175,15 @@ class ProfileView(GUIView):
         elif page == 'orders':
             self.context['subpage'] = 'orders'
             # Fetch orders from db
-            orders = db.list_orders(key='user_id', value=ses.get_user_id())
-            # Fetch resources
-            if orders:
-                id_list = [i.get('resource_id') for i in orders]
-                resources = self.client.batch_records(id_list)
-                # Map orders and full resources
-                for i, v in enumerate(orders):
-                    v['resource'] = resources[i]
-                self.context['orders'] = orders
+            # orders = db.list_orders(key='user_id', value=ses.get_user_id())
+            # # Fetch resources
+            # if orders:
+            #     id_list = [i.get('resource_id') for i in orders]
+            #     resources = self.client.batch_records(id_list)
+            #     # Map orders and full resources
+            #     for i, v in enumerate(orders):
+            #         v['resource'] = resources[i]
+            #     self.context['orders'] = orders
 
         elif page == 'bookmarks':
             self.context['subpage'] = 'bookmarks'
@@ -212,62 +215,90 @@ class AdminView(GUIView):
     decorators = [employee_required]
 
     def dispatch_request(self, page):
-        # if page == 'orders':
-        #     self.context['subpage'] = 'orders'
+        self.inv = InventoryService(env.get('ALMANAK_INVENTORY_CREDENTIALS'))
+    
+        if page == 'orders':
+            self.context['subpage'] = 'orders'
+            orders = self.inv.list_orders()
+            if orders.get('error'):
+                self.context['error'] = orders.get('error')
+                return render_template('errorpages/error.html', **self.context)
+            
+            available = []
+            initialized = []
+            for order in orders.get('data'):
+                status = order.get('status')
+                if status == 'available':
+                    available.append(order)
+                elif status == 'initialized':
+                    initialized.append(order)
+            
+            self.context['orders'] = {
+                'available': available,
+                'initialized': initialized,
+            }
 
-        # elif page == 'units':
-        #     self.context['subpage'] = 'units'
-        # elif page == 'default':
-        #     self.context['page'] = 'default'
+        elif page == 'units':
+            self.context['subpage'] = 'units'
 
-        # elif page == 'users':
-        #     self.context['subpage'] = 'users'
-        #     # Fetch users from local database
-        #     self.context['users'] = db.get_users()
-        render_template('admin.html', **self.context)
+        elif page == 'default':
+            self.context['page'] = 'default'
+
+        elif page == 'users':
+            self.context['subpage'] = 'users'
+            # Fetch users from local database
+            self.context['users'] = []  # db.list_users()
+
+        return render_template('admin.html', **self.context)
 
 
 class OrderAPI(MethodView):
     # Receives and returns JSON, but is dependent on a session-object
-    decorators = [login_required]
+    decorators = [employee_required]
 
-    # def post(self):
-    #     payload = request.get_json()
-    #     unit_id = payload.get('storage_id')
-    #     resource_id = payload.get('resource_id')
+    def post(self):
+        inv = InventoryService(env.get('ALMANAK_INVENTORY_CREDENTIALS'))
+        payload = request.get_json()
+        unit_id = payload.get('storage_id')
+        resource_id = payload.get('resource_id')
 
-    #     if resource_id in ses.get_orders():
-    #         resp = {'error': True,
-    #                 'msg': u'Du har allerede bestilt materialet.'}
+        if resource_id in ses.get_orders():
+            resp = {'error': True,
+                    'msg': u'Du har allerede materialet på din bestillingsliste.'}
 
-    #     elif unit_id and resource_id:
-    #         # resp = db.create_order(user, resource_id, unit_id)
-    #         resp = db.put_order(ses.get_user_id(), resource_id, unit_id)
-    #         if not resp.get('error'):
-    #             ses.add_order(resource_id)  # Add to session also
+        elif unit_id and resource_id:
+            # resp = db.put_order(ses.get_user_id(), resource_id, unit_id)
+            data = {
+                'resource_id': resource_id,
+                'storage_unit_id': unit_id,
+                'user_id': ses.get_user_id(),
+            }
+            username = ses.get_user().get('name')
+            resp = inv.insert_order(data, username)
+            if not resp.get('error'):
+                ses.add_order(resource_id)  # Add to session also
+        else:
+            resp = {'error': True,
+                    'msg': u'Manglende information: unit_id eller \
+                        resource_id.'}
 
-    #     else:
-    #         resp = {'error': True,
-    #                 'msg': u'Manglende information: unit_id eller \
-    #                     resource_id.'}
-
-    #     return jsonify(resp)
+        return jsonify(resp)
 
     # def delete(self, resource_id):
-        # response = db.delete_order(ses.get_user_id(), resource_id)
-        # key = {'user_id': ses.get_user_id(), 'resource_id': resource_id}
-        # response = db.delete_order(key)
+    #     response = db.delete_order(ses.get_user_id(), resource_id)
+    #     key = {'user_id': ses.get_user_id(), 'resource_id': resource_id}
+    #     response = db.delete_order(key)
 
-        # if not response.get('error'):
-        #     ses.remove_order(resource_id)
+    #     if not response.get('error'):
+    #         ses.remove_order(resource_id)
 
-        # m = response.get('mail')
-        # if m:
-        #     mail.send_mail(recipient=m.get('email'),
-        #                    event='order_available',
-        #                    data={'name': m.get('name'),
-        #                          'resource': m.get('resource_id')})
-        # return jsonify(response)
+    #     m = response.get('mail')
+    #     if m:
+    #         mail.send_mail(recipient=m.get('email'),
+    #                        event='order_available',
+    #                        data={'name': m.get('name'),
+    #                              'resource': m.get('resource_id')})
+    #     return jsonify(response)
 
 
 class BookmarkAPI(MethodView):
@@ -276,7 +307,6 @@ class BookmarkAPI(MethodView):
     decorators = [login_required]
 
     def post(self):
-        user_id = ses.get_user_id()
         payload = request.get_json()
         resource_id = payload.get('resource_id')
 
@@ -285,7 +315,7 @@ class BookmarkAPI(MethodView):
                 return jsonify({'error': True,
                                 'msg': 'Materialet var allerede bogmærket'})
             else:
-                bookmark = {'user_id': user_id, 'resource_id': resource_id}
+                bookmark = {'user_id': ses.get_user_id(), 'resource_id': resource_id}
                 response = db.put_bookmark(bookmark)
                 if not response.get('error'):
                     ses.add_bookmark(resource_id)  # Add to session also
@@ -295,8 +325,7 @@ class BookmarkAPI(MethodView):
                             'msg': 'Manglende materialeID'})
 
     def delete(self, resource_id):
-        user_id = ses.get_user_id()
-        bookmark = {'user_id': user_id, 'resource_id': resource_id}
+        bookmark = {'user_id': ses.get_user_id(), 'resource_id': resource_id}
         response = db.delete_bookmark(bookmark)
         if not response.get('error'):
             ses.remove_bookmark(resource_id)  # Remove from session also

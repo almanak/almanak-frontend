@@ -15,9 +15,8 @@
             <span class="fas fa-times icon-left"></span><span>Fjern bogmærke</span>
         </button>
 
-        {# Orders not implemented yet
         <!-- order-handlers -->
-        {% if (r.availability.id == 2) and vars.storage_id %}
+        {% if session.get('is_employee') and (r.availability.id == 2) and vars.storage_id %}
             <button data-resource-id="{{r.id}}" data-storage-id="{{vars.storage_id}}" class="button small order-handler {% if r.id in session.get('orders', []) %}hide{% endif %}" data-action="create-order">
                 <span class="far fa-check-square icon-left"></span><span>Bestil materialet</span>
             </button>
@@ -25,7 +24,6 @@
                 <span class="fas fa-times icon-left"></span><span>Afbryd bestilling</span>
             </button>
         {% endif %}
-        #}
 
     {% endif %}
 </div>

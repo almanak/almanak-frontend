@@ -179,6 +179,10 @@ app.add_url_rule('/users/me/<path:page>',
 app.add_url_rule('/autosuggest',
                  view_func=views.AutosuggestView.as_view('autosuggest'))
 
+# Admin
+app.add_url_rule('/admin/<path:page>',
+                 view_func=views.AdminView.as_view('admin'))
+
 # CartAPI
 app.add_url_rule('/cart',
                  view_func=views.CartView.as_view('show_cart'),
